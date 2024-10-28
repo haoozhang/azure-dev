@@ -65,6 +65,7 @@ func Parse(configJson []byte) (Config, error) {
 //
 // The config directory is guaranteed to exist, otherwise an error is returned.
 func GetUserConfigDir() (string, error) {
+	// Haozhan: Env: AZD_CONFIG_DIR, else ~/.azd
 	configDirPath := os.Getenv("AZD_CONFIG_DIR")
 	if configDirPath == "" {
 		homeDir, err := os.UserHomeDir()

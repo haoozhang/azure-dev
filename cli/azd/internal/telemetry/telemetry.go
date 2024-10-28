@@ -52,9 +52,11 @@ type TelemetrySystem struct {
 	telemetryDirectory string
 }
 
+// Haozhan: Ensure executed only once, that is, telemetry system is a singleton.
 var once sync.Once
 var instance *TelemetrySystem
 
+// Haozhan: Return UserConfigDir/telemetry directory
 func getTelemetryDirectory() (string, error) {
 	configDir, err := config.GetUserConfigDir()
 	if err != nil {
@@ -125,6 +127,7 @@ func initialize() (*TelemetrySystem, error) {
 		return nil, fmt.Errorf("failed to parse appInsights connection string: %w", err)
 	}
 
+	// Haozhan: AppInsights Exporter
 	exporter := NewExporter(storageQueue, config.InstrumentationKey)
 
 	options := []trace.TracerProviderOption{
@@ -134,6 +137,7 @@ func initialize() (*TelemetrySystem, error) {
 
 	logFile, logUrl := getTraceFlags()
 
+	// Haozhan: Stdout file
 	if logFile != "" {
 		file, err := os.Create(logFile)
 		if err != nil {
@@ -148,6 +152,7 @@ func initialize() (*TelemetrySystem, error) {
 		options = append(options, trace.WithBatcher(stdoutExporter))
 	}
 
+	// Haozhan: Remote endpoint
 	if logUrl != "" {
 		traceOptions := []otlptracehttp.Option{}
 
@@ -187,6 +192,7 @@ func initialize() (*TelemetrySystem, error) {
 		options = append(options, trace.WithBatcher(httpExporter))
 	}
 
+	// Haozhan: OpenTelemetry TracerProvider
 	tp := trace.NewTracerProvider(options...)
 
 	otel.SetTracerProvider(tp)

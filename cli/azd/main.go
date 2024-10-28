@@ -55,13 +55,16 @@ func main() {
 
 	log.Printf("azd version: %s", internal.Version)
 
+	// Haozhan: Initialize telemetry system
 	ts := telemetry.GetTelemetrySystem()
 
+	// Haozhan: Launch a goroutine to check latest version
 	latest := make(chan semver.Version)
 	go fetchLatestVersion(latest)
 
 	rootContainer := ioc.NewNestedContainer(nil)
 	ioc.RegisterInstance(rootContainer, ctx)
+	// Haozhan: Initialize command system and set up the root command
 	cmdErr := cmd.NewRootCmd(false, nil, rootContainer).ExecuteContext(ctx)
 
 	oneauth.Shutdown()
@@ -143,6 +146,8 @@ func main() {
 		}
 	}
 
+	// Haozhan: Shut down the telemetry system at the end of command execution and
+	// may start a background upload process to send collected telemetry
 	if ts != nil {
 		err := ts.Shutdown(ctx)
 		if err != nil {

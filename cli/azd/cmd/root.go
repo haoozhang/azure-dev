@@ -45,9 +45,11 @@ func NewRootCmd(
 		productName = "The Azure Developer CLI (`azd`)"
 	}
 
+	// Haozhan: Define the root command
 	rootCmd := &cobra.Command{
 		Use:   "azd",
 		Short: fmt.Sprintf("%s is an open-source tool that helps onboard and manage your application on Azure", productName),
+		// Haozhan: Executed before any subcommands to handle platform and changing working directory
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			// If there was a platform configuration error report it to the user until it is resolved
 			// Using fmt.Printf directly here since we can't leverage our IoC container to resolve a console instance
@@ -71,6 +73,7 @@ func NewRootCmd(
 
 			return nil
 		},
+		// Haozhan: Run after command execution to reset working directory
 		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
 			// This is just for cleanliness and making writing tests simpler since
 			// we can just remove the entire project folder afterwards.
@@ -87,6 +90,7 @@ func NewRootCmd(
 
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
+	// Haozhan: Set up global flags for root command
 	root := actions.NewActionDescriptor("azd", &actions.ActionDescriptorOptions{
 		Command: rootCmd,
 		FlagsResolver: func(cmd *cobra.Command) *internal.GlobalCommandOptions {
@@ -117,6 +121,7 @@ func NewRootCmd(
 		},
 	})
 
+	// Haozhan: Define sub-commands to the root command
 	configActions(root, opts)
 	envActions(root)
 	infraActions(root)
@@ -126,10 +131,14 @@ func NewRootCmd(
 	authActions(root)
 	hooksActions(root)
 
+	// Haozhan: Add commands to the root command
 	root.Add("version", &actions.ActionDescriptorOptions{
+		// Haozhan: Command
 		Command: &cobra.Command{
 			Short: "Print the version number of Azure Developer CLI.",
 		},
+		// Haozhan: Action for handling what happenes when the command is invoked
+		// Haozhan: Flags for setting up any flags that the command accepts
 		ActionResolver:   newVersionAction,
 		FlagsResolver:    newVersionFlags,
 		DisableTelemetry: true,

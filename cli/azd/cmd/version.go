@@ -25,6 +25,7 @@ func (v *versionFlags) Bind(local *pflag.FlagSet, global *internal.GlobalCommand
 	v.global = global
 }
 
+// Haozhan: Create an instance of VersionFlags and bind global options
 func newVersionFlags(cmd *cobra.Command, global *internal.GlobalCommandOptions) *versionFlags {
 	flags := &versionFlags{}
 	flags.Bind(cmd.Flags(), global)
@@ -39,6 +40,7 @@ type versionAction struct {
 	console   input.Console
 }
 
+// Haozhan: Create a new instance of VersionAction
 func newVersionAction(
 	flags *versionFlags,
 	formatter output.Formatter,
@@ -53,6 +55,9 @@ func newVersionAction(
 	}
 }
 
+// Haozhan: This method is automatically invoked by Cobra when executing the `azd version` command,
+// 1. Resolve the versionAction using the newVersionAction function
+// 2. Execute the Run method of the versionAction
 func (v *versionAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 	switch v.formatter.Kind() {
 	case output.NoneFormat:
