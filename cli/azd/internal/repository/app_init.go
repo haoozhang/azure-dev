@@ -48,6 +48,8 @@ func (i *Initializer) InitFromApp(
 	i.console.ShowSpinner(ctx, title, input.Step)
 	wd := azdCtx.ProjectDirectory()
 
+	// Haozhan: Detect projects
+
 	projects := []appdetect.Project{}
 	start := time.Now()
 	sourceDir := filepath.Join(wd, "src")

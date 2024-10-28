@@ -36,6 +36,7 @@ func newDirectoryConfig(options ...DetectDirectoryOption) languageConfig {
 	return c
 }
 
+// Haozhan: Inject language detectors here
 func setDetectors(c *languageConfig) {
 	languages := map[Language]bool{}
 	if c.IncludeLanguages != nil {

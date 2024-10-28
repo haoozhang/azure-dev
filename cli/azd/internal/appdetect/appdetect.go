@@ -291,6 +291,7 @@ func walkDirectories(path string, fn walkDirFunc) error {
 		return fmt.Errorf("reading directory: %w", err)
 	}
 
+	// Haozhan: call walkFunc
 	err = fn(path, entries)
 	if errors.Is(err, filepath.SkipDir) {
 		// skip the directory
@@ -300,6 +301,7 @@ func walkDirectories(path string, fn walkDirFunc) error {
 		return err
 	}
 
+	// Haozhan: recursively call walkDirectories
 	for _, entry := range entries {
 		if entry.IsDir() {
 			dir := filepath.Join(path, entry.Name())

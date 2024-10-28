@@ -29,6 +29,8 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 				return nil, fmt.Errorf("error reading pom.xml: %w", err)
 			}
 
+			// Haozhan: If current project has modules, it is considered a multi-module project,
+			// we will capture the root project, but return nil
 			if len(project.Modules) > 0 {
 				// This is a multi-module project, we will capture the analysis, but return nil
 				// to continue recursing
@@ -36,6 +38,7 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 				return nil, nil
 			}
 
+			// Haozhan: Check if the pom.xml file belongs to any previously detected root project
 			var currentRoot *mavenProject
 			for _, rootProject := range jd.rootProjects {
 				// we can say that the project is in the root project if the path is under the project

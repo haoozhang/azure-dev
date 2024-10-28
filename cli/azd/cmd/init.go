@@ -32,6 +32,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// Haozhan: Create an instance of InitFlags, then bind local command flags and global options
 func newInitFlags(cmd *cobra.Command, global *internal.GlobalCommandOptions) *initFlags {
 	flags := &initFlags{}
 	flags.Bind(cmd.Flags(), global)
@@ -39,6 +40,7 @@ func newInitFlags(cmd *cobra.Command, global *internal.GlobalCommandOptions) *in
 	return flags
 }
 
+// Haozhan: Create a new instance of InitAction
 func newInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
@@ -58,6 +60,9 @@ type initFlags struct {
 }
 
 func (i *initFlags) Bind(local *pflag.FlagSet, global *internal.GlobalCommandOptions) {
+	// Haozhan: Bind a string flag (long-form or short-form) to a variable
+	// so that when the flag is provided by the user at runtime,
+	// its value will be automatically assigned to that variable.
 	local.StringVarP(
 		&i.templatePath,
 		"template",
@@ -111,6 +116,7 @@ type initAction struct {
 	featuresManager *alpha.FeatureManager
 }
 
+// Haozhan: Create a new instance of InitAction
 func newInitAction(
 	lazyAzdCtx *lazy.Lazy[*azdcontext.AzdContext],
 	lazyEnvManager *lazy.Lazy[environment.Manager],
@@ -140,6 +146,7 @@ func (i *initAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 		return nil, fmt.Errorf("getting cwd: %w", err)
 	}
 
+	// Haozhan: New an AzdContext with the current working directory
 	azdCtx := azdcontext.NewAzdContextWithDirectory(wd)
 	i.lazyAzdCtx.SetValue(azdCtx)
 
@@ -159,6 +166,7 @@ func (i *initAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 		Title: "Initializing an app to run on Azure (azd init)",
 	})
 
+	// Haozhan: Check if azure.yaml already exists
 	var existingProject bool
 	if _, err := os.Stat(azdCtx.ProjectPath()); err == nil {
 		existingProject = true
@@ -167,6 +175,8 @@ func (i *initAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 	} else {
 		return nil, fmt.Errorf("checking if project exists: %w", err)
 	}
+
+	// Haozhan: Determine init type: template, code, or environment
 
 	var initTypeSelect initType
 	if i.flags.templatePath != "" || len(i.flags.templateTags) > 0 {
@@ -186,6 +196,8 @@ func (i *initAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 		initTypeSelect = initEnvironment
 	}
 
+	// Haozhan: When only `azd init` without other flags (-t, --from-code) provided,
+	// prompt the user to select the init type
 	if initTypeSelect == initUnknown {
 		initTypeSelect, err = promptInitType(i.console, ctx)
 		if err != nil {
@@ -238,6 +250,7 @@ func (i *initAction) Run(ctx context.Context) (*actions.ActionResult, error) {
 			}
 		}
 
+		// Haozhan: Start to init from app
 		err = i.repoInitializer.InitFromApp(ctx, azdCtx, func() (*environment.Environment, error) {
 			return i.initializeEnv(ctx, azdCtx, nil)
 		})

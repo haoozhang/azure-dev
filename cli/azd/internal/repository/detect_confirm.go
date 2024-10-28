@@ -64,10 +64,12 @@ func (d *detectConfirm) Init(projects []appdetect.Project, root string) {
 	d.root = root
 
 	for _, project := range projects {
+		// Haozhan: Service
 		if _, supported := languageMap[project.Language]; supported {
 			d.Services = append(d.Services, project)
 		}
 
+		// Haozhan: Database
 		for _, dbType := range project.DatabaseDeps {
 			if _, supported := dbMap[dbType]; supported {
 				d.Databases[dbType] = EntryKindDetected
