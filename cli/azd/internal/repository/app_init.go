@@ -258,6 +258,7 @@ func (i *Initializer) InitFromApp(
 	tracing.SetUsageAttributes(fields.AppInitLastStep.String("generate"))
 
 	i.console.Message(ctx, "\n"+output.WithBold("Generating files to run your app on Azure:")+"\n")
+	// Haozhan: Generate azure.yaml
 	err = i.genProjectFile(ctx, azdCtx, detect)
 	if err != nil {
 		return err
@@ -279,6 +280,7 @@ func (i *Initializer) InitFromApp(
 		return fmt.Errorf("loading scaffold templates: %w", err)
 	}
 
+	// Haozhan: Generate ./infra files
 	err = scaffold.ExecInfra(t, spec, staging)
 	if err != nil {
 		return err
@@ -288,6 +290,7 @@ func (i *Initializer) InitFromApp(
 		return err
 	}
 
+	// Haozhan: How to process duplicate ./infra files
 	skipStagingFiles, err := i.promptForDuplicates(ctx, staging, infra)
 	if err != nil {
 		return err
@@ -301,10 +304,12 @@ func (i *Initializer) InitFromApp(
 		}
 	}
 
+	// Haozhan: Copy into ./infra
 	if err := copy.Copy(staging, infra, options); err != nil {
 		return fmt.Errorf("copying contents from temp staging directory: %w", err)
 	}
 
+	// Haozhan: Generate next-steps file
 	err = scaffold.Execute(t, "next-steps.md", spec, filepath.Join(azdCtx.ProjectDirectory(), "next-steps.md"))
 	if err != nil {
 		return err
@@ -327,10 +332,12 @@ func (i *Initializer) genProjectFile(
 	var err error
 	defer i.console.StopSpinner(ctx, title, input.GetStepResultFormat(err))
 
+	// Haozhan: Create project config from detect
 	config, err := prjConfigFromDetect(azdCtx.ProjectDirectory(), detect)
 	if err != nil {
 		return fmt.Errorf("converting config: %w", err)
 	}
+	// Haozhan: Save project config to azure.yaml
 	err = project.Save(
 		ctx,
 		&config,

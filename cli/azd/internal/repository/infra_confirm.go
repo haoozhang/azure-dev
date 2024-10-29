@@ -75,6 +75,7 @@ func (i *Initializer) infraSpecFromDetect(
 				}
 			}
 
+			// Haozhan: Databases
 			switch database {
 			case appdetect.DbMongo:
 				spec.DbCosmosMongo = &scaffold.DatabaseCosmosMongo{
@@ -95,6 +96,7 @@ func (i *Initializer) infraSpecFromDetect(
 		}
 	}
 
+	// Haozhan: Services
 	for _, svc := range detect.Services {
 		name := names.LabelName(filepath.Base(svc.Path))
 		serviceSpec := scaffold.ServiceSpec{
