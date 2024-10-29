@@ -40,7 +40,7 @@ func newInitFlags(cmd *cobra.Command, global *internal.GlobalCommandOptions) *in
 	return flags
 }
 
-// Haozhan: Create a new instance of InitAction
+// Haozhan: Create a new instance of InitCmd
 func newInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
