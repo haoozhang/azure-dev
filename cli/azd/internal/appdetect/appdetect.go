@@ -154,9 +154,21 @@ func (a AzureDepServiceBus) ResourceDisplay() string {
 
 type AzureDepEventHubs struct {
 	EventHubsNamePropertyMap map[string]string
+	FromDependency           FromDependency
 	UseKafka                 bool
 	SpringBootVersion        string
 }
+
+type FromDependency string
+
+const (
+	SpringCloudStreamEventHubs  = "spring-cloud-azure-stream-binder-eventhubs"
+	SpringCloudEventHubsStarter = "spring-cloud-azure-starter-eventhubs"
+	SpringIntegrationEventHubs  = "spring-cloud-azure-starter-integration-eventhubs"
+	SpringMessagingEventHubs    = "spring-messaging-azure-eventhubs"
+	SpringCloudStreamKafka      = "spring-cloud-starter-stream-kafka"
+	SpringKafka                 = "spring-kafka"
+)
 
 func (a AzureDepEventHubs) ResourceDisplay() string {
 	return "Azure Event Hubs"

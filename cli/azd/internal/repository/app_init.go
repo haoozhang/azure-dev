@@ -6,6 +6,7 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"time"
@@ -154,6 +155,10 @@ func (i *Initializer) InitFromApp(
 						}
 					}
 					// prompt event hubs name if not detected
+					if len(eventHubs.EventHubsNamePropertyMap) == 0 {
+						promptMissingEventHubsNameOrExit(i.console, ctx, &eventHubs)
+						prj.AzureDeps[depIndex] = eventHubs
+					}
 					for property, eventHubsName := range eventHubs.EventHubsNamePropertyMap {
 						if eventHubsName == "" {
 							promptMissingPropertyAndExit(i.console, ctx, property)
@@ -1095,10 +1100,59 @@ func promptSpringBootVersion(console input.Console, ctx context.Context) (string
 	}
 }
 
+func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context, eventHubs *appdetect.AzureDepEventHubs) {
+	switch eventHubs.FromDependency {
+	case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
+		eventHubsName, err := promptEventHubsName(console, ctx)
+		if err != nil {
+			console.Message(ctx, fmt.Sprintf("Error happened when prompt eventhubs name: %s.", err))
+			os.Exit(-1)
+		}
+		eventHubs.EventHubsNamePropertyMap = map[string]string{
+			string(eventHubs.FromDependency): eventHubsName,
+		}
+	case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
+		promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")
+		os.Exit(0)
+	case appdetect.SpringCloudEventHubsStarter:
+		promptMissingPropertyAndExit(console, ctx, "spring.cloud.azure.eventhubs.event-hub-name")
+		os.Exit(0)
+	}
+}
+
 func promptMissingPropertyAndExit(console input.Console, ctx context.Context, key string) {
 	console.Message(ctx, fmt.Sprintf("No value was provided for %s. Please update the configuration file "+
 		"(like application.properties or application.yaml) with a valid value.", key))
 	os.Exit(0)
+}
+
+func promptEventHubsName(console input.Console, ctx context.Context) (string, error) {
+	for {
+		eventHubsName, err := console.Prompt(ctx, input.ConsoleOptions{
+			Message: "Input the name of Azure EventHubs (Not EventHubs namespace name):",
+			Help:    "Hint: Azure EventHubs Name, not EventHubs namespace name",
+		})
+		if err != nil {
+			return "", err
+		}
+		if IsValidEventhubsName(eventHubsName) {
+			return eventHubsName, nil
+		} else {
+			console.Message(ctx, "Invalid eventhubs name. Please choose another name.")
+		}
+	}
+}
+
+// contain letters, numbers, periods (.), hyphens (-), and underscores (_)
+// must begin and end with a letter or number
+var eventHubsNameRegex = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$`)
+
+func IsValidEventhubsName(name string) bool {
+	// up to 256 characters
+	if len(name) == 0 || len(name) > 256 {
+		return false
+	}
+	return eventHubsNameRegex.MatchString(name)
 }
 
 func appendJavaEurekaServerEnv(svc *project.ServiceConfig, eurekaServerName string) error {
