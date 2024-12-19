@@ -580,10 +580,6 @@ func GetServiceBindingEnvsForEventHubsKafka(eventHubs AzureDepEventHubs) ([]Env,
 				Value: ToServiceBindingEnvValue(ServiceTypeMessagingEventHubs, ServiceBindingInfoTypeEndpoint),
 			},
 			{
-				Name:  "spring.kafka.bootstrap-servers",
-				Value: ToServiceBindingEnvValue(ServiceTypeMessagingEventHubs, ServiceBindingInfoTypeEndpoint),
-			},
-			{
 				Name:  "spring.cloud.azure.eventhubs.credential.managed-identity-enabled",
 				Value: "true",
 			},
@@ -596,10 +592,6 @@ func GetServiceBindingEnvsForEventHubsKafka(eventHubs AzureDepEventHubs) ([]Env,
 		commonInformation = []Env{
 			{
 				Name:  "spring.cloud.stream.kafka.binder.brokers",
-				Value: ToServiceBindingEnvValue(ServiceTypeMessagingEventHubs, ServiceBindingInfoTypeEndpoint),
-			},
-			{
-				Name:  "spring.kafka.bootstrap-servers",
 				Value: ToServiceBindingEnvValue(ServiceTypeMessagingEventHubs, ServiceBindingInfoTypeEndpoint),
 			},
 			{
