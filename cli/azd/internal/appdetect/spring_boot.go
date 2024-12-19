@@ -240,7 +240,7 @@ func detectEventHubsAccordingToSpringIntegrationEventhubsDependency(
 	var targetArtifactId = "spring-cloud-azure-starter-integration-eventhubs"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
-			// eventhubs name is empty here because no autoconfigured property
+			// eventhubs name is empty here because no configured property
 			UseKafka:       false,
 			FromDependency: SpringIntegrationEventHubs,
 		}
@@ -255,7 +255,7 @@ func detectEventHubsAccordingToSpringMessagingEventhubsDependency(
 	var targetArtifactId = "spring-messaging-azure-eventhubs"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
-			// eventhubs name is empty here because no autoconfigured property
+			// eventhubs name is empty here because no configured property
 			UseKafka:       false,
 			FromDependency: SpringMessagingEventHubs,
 		}
@@ -290,7 +290,7 @@ func detectEventHubsAccordingToSpringKafkaDependency(azdProject *Project, spring
 	var targetArtifactId = "spring-kafka"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
-			// eventhubs name is empty here because no autoconfigured property
+			// eventhubs name is empty here because no configured property
 			UseKafka:          true,
 			SpringBootVersion: springBootProject.springBootVersion,
 			FromDependency:    SpringMessagingEventHubs,
