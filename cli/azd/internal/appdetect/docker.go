@@ -11,12 +11,24 @@ import (
 	"strings"
 )
 
-func detectDockerInDirectory(path string, entries []fs.DirEntry) (*Docker, error) {
+func detectDockerInDirectory(project Project, entries []fs.DirEntry) (*Docker, error) {
+	path := project.Path
 	for _, entry := range entries {
 		if strings.ToLower(entry.Name()) == "dockerfile" {
 			dockerFilePath := filepath.Join(path, entry.Name())
 			return AnalyzeDocker(dockerFilePath)
 		}
+	}
+
+	// if Dockerfile not exists, provide a default one
+	if project.Language == Java {
+		_, hasParentPom := project.Options[JavaProjectOptionMavenParentPath]
+		err := addDefaultDockerfile(path, hasParentPom)
+		if err != nil {
+			return nil, err
+		}
+		dockerfilePath := filepath.Join(path, "Dockerfile")
+		return AnalyzeDocker(dockerfilePath)
 	}
 
 	return nil, nil
@@ -69,4 +81,51 @@ func parsePortsInLine(s string) ([]Port, error) {
 		ports = append(ports, Port{portNumber, protocol})
 	}
 	return ports, nil
+}
+
+func addDefaultDockerfile(path string, hasParentPom bool) error {
+	if _, err := os.Stat(path); err != nil {
+		return fmt.Errorf("error accessing path %s: %v", path, err)
+	}
+
+	dockerfilePath := filepath.Join(path, "Dockerfile")
+	if _, err := os.Stat(dockerfilePath); err == nil {
+		fmt.Println("Dockerfile already exists, skipping creation.")
+		return nil
+	} else if !os.IsNotExist(err) {
+		return fmt.Errorf("error checking Dockerfile at path %s: %v", path, err)
+	}
+
+	file, err := os.Create(dockerfilePath)
+	if err != nil {
+		return fmt.Errorf("failed to create Dockerfile at %s: %w", dockerfilePath, err)
+	}
+	defer file.Close()
+
+	// for single-module project, we have to maven build first, then copy and run jar
+	// for multi-module project, just copy and run jar because of prepackage hook
+	var dockerfileContent string
+	if hasParentPom {
+		dockerfileContent = `FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+COPY ./target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]`
+	} else {
+		dockerfileContent = `FROM maven:3 AS build
+WORKDIR /app
+COPY . .
+RUN mvn --batch-mode clean package -DskipTests
+
+FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+WORKDIR /
+COPY --from=build /app/target/*.jar /app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]`
+	}
+
+	if _, err = file.WriteString(dockerfileContent); err != nil {
+		return fmt.Errorf("failed to write Dockerfile at %s: %w", dockerfilePath, err)
+	}
+
+	return nil
 }
