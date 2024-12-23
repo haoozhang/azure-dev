@@ -85,7 +85,7 @@ func parsePortsInLine(s string) ([]Port, error) {
 
 func addDefaultDockerfile(path string, hasParentPom bool) error {
 	if _, err := os.Stat(path); err != nil {
-		return fmt.Errorf("error accessing path %s: %v", path, err)
+		return fmt.Errorf("error accessing path %s: %w", path, err)
 	}
 
 	dockerfilePath := filepath.Join(path, "Dockerfile")
@@ -93,7 +93,7 @@ func addDefaultDockerfile(path string, hasParentPom bool) error {
 		fmt.Println("Dockerfile already exists, skipping creation.")
 		return nil
 	} else if !os.IsNotExist(err) {
-		return fmt.Errorf("error checking Dockerfile at path %s: %v", path, err)
+		return fmt.Errorf("error checking Dockerfile at path %s: %w", path, err)
 	}
 
 	file, err := os.Create(dockerfilePath)

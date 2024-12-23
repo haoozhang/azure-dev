@@ -40,6 +40,15 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -56,6 +65,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
 					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/application", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -65,6 +83,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionMavenParentPath:       filepath.Join(dir, "java-multimodules"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
+					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/library", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
 					},
 				},
 				{
@@ -136,6 +163,15 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -152,6 +188,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
 					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/application", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -161,6 +206,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionMavenParentPath:       filepath.Join(dir, "java-multimodules"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
+					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/library", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
 					},
 				},
 			},
@@ -181,6 +235,15 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -197,6 +260,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
 					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/application", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -206,6 +278,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionMavenParentPath:       filepath.Join(dir, "java-multimodules"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
+					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/library", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
 					},
 				},
 			},
@@ -229,6 +310,15 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -245,6 +335,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
 					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/application", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
+					},
 				},
 				{
 					Language:      Java,
@@ -254,6 +353,15 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionMavenParentPath:       filepath.Join(dir, "java-multimodules"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multimodules", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multimodules", "mvnw.cmd"),
+					},
+					Docker: &Docker{
+						Path: filepath.Join(dir, "java-multimodules/library", "Dockerfile"),
+						Ports: []Port{
+							{
+								Number:   8080,
+								Protocol: "tcp",
+							},
+						},
 					},
 				},
 				{
