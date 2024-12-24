@@ -1113,7 +1113,7 @@ func promptSpringBootVersion(console input.Console, ctx context.Context) (string
 }
 
 func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context, eventHubs *appdetect.AzureDepEventHubs) {
-	switch eventHubs.FromDependency {
+	switch eventHubs.MavenDependencyType {
 	case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
 		eventHubsName, err := promptEventHubsName(console, ctx)
 		if err != nil {
@@ -1121,7 +1121,7 @@ func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context
 			os.Exit(-1)
 		}
 		eventHubs.EventHubsNamePropertyMap = map[string]string{
-			string(eventHubs.FromDependency): eventHubsName,
+			string(eventHubs.MavenDependencyType): eventHubsName,
 		}
 	case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
 		promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")

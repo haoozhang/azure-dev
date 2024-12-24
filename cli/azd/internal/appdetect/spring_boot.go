@@ -185,11 +185,11 @@ func detectServiceBusAccordingToSpringCloudStreamBinderMavenDependency(
 func detectEventHubs(azdProject *Project, springBootProject *SpringBootProject) {
 	// we need to figure out multiple projects are using the same event hub
 	detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(azdProject, springBootProject)
-	detectEventHubsAccordingToSpringCloudEventhubsStarterDependency(azdProject, springBootProject)
-	detectEventHubsAccordingToSpringIntegrationEventhubsDependency(azdProject, springBootProject)
-	detectEventHubsAccordingToSpringMessagingEventhubsDependency(azdProject, springBootProject)
+	detectEventHubsAccordingToSpringCloudEventhubsStarterMavenDependency(azdProject, springBootProject)
+	detectEventHubsAccordingToSpringIntegrationEventhubsMavenDependency(azdProject, springBootProject)
+	detectEventHubsAccordingToSpringMessagingEventhubsMavenDependency(azdProject, springBootProject)
 	detectEventHubsAccordingToSpringCloudStreamKafkaMavenDependency(azdProject, springBootProject)
-	detectEventHubsAccordingToSpringKafkaDependency(azdProject, springBootProject)
+	detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject, springBootProject)
 }
 
 func detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(
@@ -201,7 +201,7 @@ func detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: bindingDestinations,
 			UseKafka:                 false,
-			FromDependency:           SpringCloudStreamEventHubs,
+			MavenDependencyType:      SpringCloudStreamEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -212,7 +212,7 @@ func detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(
 	}
 }
 
-func detectEventHubsAccordingToSpringCloudEventhubsStarterDependency(
+func detectEventHubsAccordingToSpringCloudEventhubsStarterMavenDependency(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-starter-eventhubs"
@@ -224,7 +224,7 @@ func detectEventHubsAccordingToSpringCloudEventhubsStarterDependency(
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: eventHubsNamePropertyMap,
 			UseKafka:                 false,
-			FromDependency:           SpringCloudEventHubsStarter,
+			MavenDependencyType:      SpringCloudEventHubsStarter,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -234,30 +234,30 @@ func detectEventHubsAccordingToSpringCloudEventhubsStarterDependency(
 	}
 }
 
-func detectEventHubsAccordingToSpringIntegrationEventhubsDependency(
+func detectEventHubsAccordingToSpringIntegrationEventhubsMavenDependency(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-starter-integration-eventhubs"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:       false,
-			FromDependency: SpringIntegrationEventHubs,
+			UseKafka:            false,
+			MavenDependencyType: SpringIntegrationEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 	}
 }
 
-func detectEventHubsAccordingToSpringMessagingEventhubsDependency(
+func detectEventHubsAccordingToSpringMessagingEventhubsMavenDependency(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-messaging-azure-eventhubs"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:       false,
-			FromDependency: SpringMessagingEventHubs,
+			UseKafka:            false,
+			MavenDependencyType: SpringMessagingEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -274,7 +274,7 @@ func detectEventHubsAccordingToSpringCloudStreamKafkaMavenDependency(
 			EventHubsNamePropertyMap: bindingDestinations,
 			UseKafka:                 true,
 			SpringBootVersion:        springBootProject.springBootVersion,
-			FromDependency:           SpringCloudStreamKafka,
+			MavenDependencyType:      SpringCloudStreamKafka,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -285,15 +285,15 @@ func detectEventHubsAccordingToSpringCloudStreamKafkaMavenDependency(
 	}
 }
 
-func detectEventHubsAccordingToSpringKafkaDependency(azdProject *Project, springBootProject *SpringBootProject) {
+func detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "org.springframework.kafka"
 	var targetArtifactId = "spring-kafka"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:          true,
-			SpringBootVersion: springBootProject.springBootVersion,
-			FromDependency:    SpringMessagingEventHubs,
+			UseKafka:            true,
+			SpringBootVersion:   springBootProject.springBootVersion,
+			MavenDependencyType: SpringMessagingEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -302,8 +302,8 @@ func detectEventHubsAccordingToSpringKafkaDependency(azdProject *Project, spring
 
 func detectStorageAccount(azdProject *Project, springBootProject *SpringBootProject) {
 	detectStorageAccountAccordingToSpringCloudStreamBinderMavenDependencyAndProperty(azdProject, springBootProject)
-	detectStorageAccountAccordingToSpringIntegrationEventhubsDependencyAndProperty(azdProject, springBootProject)
-	detectStorageAccountAccordingToSpringMessagingEventhubsDependencyAndProperty(azdProject, springBootProject)
+	detectStorageAccountAccordingToSpringIntegrationEventhubsMavenDependencyAndProperty(azdProject, springBootProject)
+	detectStorageAccountAccordingToSpringMessagingEventhubsMavenDependencyAndProperty(azdProject, springBootProject)
 }
 
 func detectStorageAccountAccordingToSpringCloudStreamBinderMavenDependencyAndProperty(
@@ -321,76 +321,53 @@ func detectStorageAccountAccordingToSpringCloudStreamBinderMavenDependencyAndPro
 			}
 		}
 		if containsInBindingName != "" {
-			containerNamePropertyMap := make(map[string]string)
-			for key, value := range springBootProject.applicationProperties {
-				if strings.HasSuffix(key, targetPropertyName) {
-					containerNamePropertyMap[key] = value
-				}
-			}
-			if len(containerNamePropertyMap) > 0 {
-				newDep := AzureDepStorageAccount{
-					ContainerNamePropertyMap: containerNamePropertyMap,
-				}
-				azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
-				logServiceAddedAccordingToMavenDependencyAndExtraCondition(newDep.ResourceDisplay(), targetGroupId,
-					targetArtifactId, "binding name ["+containsInBindingName+"] contains '-in-'")
-				for property, containerName := range containerNamePropertyMap {
-					log.Printf("  Detected Storage container name: [%s] for [%s] by analyzing property file.",
-						containerName, property)
-				}
-			}
+			detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
+				targetGroupId, targetArtifactId, targetPropertyName,
+				"binding name ["+containsInBindingName+"] contains '-in-'")
 		}
 	}
 }
 
-func detectStorageAccountAccordingToSpringIntegrationEventhubsDependencyAndProperty(
+func detectStorageAccountAccordingToSpringIntegrationEventhubsMavenDependencyAndProperty(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-starter-integration-eventhubs"
 	var targetPropertyName = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
-		containerNamePropertyMap := make(map[string]string)
-		for key, value := range springBootProject.applicationProperties {
-			if strings.HasSuffix(key, targetPropertyName) {
-				containerNamePropertyMap[key] = value
-			}
-		}
-		if len(containerNamePropertyMap) > 0 {
-			newDep := AzureDepStorageAccount{
-				ContainerNamePropertyMap: containerNamePropertyMap,
-			}
-			azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
-			logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
-			for property, containerName := range containerNamePropertyMap {
-				log.Printf("  Detected Storage container name: [%s] for [%s] by analyzing property file.",
-					containerName, property)
-			}
-		}
+		detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
+			targetGroupId, targetArtifactId, targetPropertyName, "")
 	}
 }
 
-func detectStorageAccountAccordingToSpringMessagingEventhubsDependencyAndProperty(
+func detectStorageAccountAccordingToSpringMessagingEventhubsMavenDependencyAndProperty(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-messaging-azure-eventhubs"
 	var targetPropertyName = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
-		containerNamePropertyMap := make(map[string]string)
-		for key, value := range springBootProject.applicationProperties {
-			if strings.HasSuffix(key, targetPropertyName) {
-				containerNamePropertyMap[key] = value
-			}
+		detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
+			targetGroupId, targetArtifactId, targetPropertyName, "")
+	}
+}
+
+func detectStorageAccountAccordingToProperty(azdProject *Project, applicationProperties map[string]string,
+	targetGroupId string, targetArtifactId string, targetPropertyName string, extraCondition string) {
+	containerNamePropertyMap := make(map[string]string)
+	for key, value := range applicationProperties {
+		if strings.HasSuffix(key, targetPropertyName) {
+			containerNamePropertyMap[key] = value
 		}
-		if len(containerNamePropertyMap) > 0 {
-			newDep := AzureDepStorageAccount{
-				ContainerNamePropertyMap: containerNamePropertyMap,
-			}
-			azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
-			logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
-			for property, containerName := range containerNamePropertyMap {
-				log.Printf("  Detected Storage container name: [%s] for [%s] by analyzing property file.",
-					containerName, property)
-			}
+	}
+	if len(containerNamePropertyMap) > 0 {
+		newDep := AzureDepStorageAccount{
+			ContainerNamePropertyMap: containerNamePropertyMap,
+		}
+		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		logServiceAddedAccordingToMavenDependencyAndExtraCondition(newDep.ResourceDisplay(), targetGroupId,
+			targetArtifactId, extraCondition)
+		for property, containerName := range containerNamePropertyMap {
+			log.Printf("  Detected Storage container name: [%s] for [%s] by analyzing property file.",
+				containerName, property)
 		}
 	}
 }
