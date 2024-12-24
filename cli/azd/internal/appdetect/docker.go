@@ -83,6 +83,22 @@ func parsePortsInLine(s string) ([]Port, error) {
 	return ports, nil
 }
 
+const (
+	DockerfileSingleStage = `FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+COPY ./target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]`
+
+	DockerfileMultiStage = `FROM maven:3 AS build
+WORKDIR /app
+COPY . .
+RUN mvn --batch-mode clean package -DskipTests
+
+FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+WORKDIR /
+COPY --from=build /app/target/*.jar /app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]`
+)
+
 func addDefaultDockerfile(path string, hasParentPom bool) error {
 	if _, err := os.Stat(path); err != nil {
 		return fmt.Errorf("error accessing path %s: %w", path, err)
@@ -102,25 +118,13 @@ func addDefaultDockerfile(path string, hasParentPom bool) error {
 	}
 	defer file.Close()
 
-	// for single-module project, we have to maven build first, then copy and run jar
-	// for multi-module project, just copy and run jar because of prepackage hook
+	// for single-module project, we have to run 'mvn package' first, then copy and run jar
+	// for multi-module project, just copy and run jar because 'mvn package' already executed in prepackage hook
 	var dockerfileContent string
 	if hasParentPom {
-		dockerfileContent = `FROM mcr.microsoft.com/openjdk/jdk:17-distroless
-COPY ./target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]`
+		dockerfileContent = DockerfileSingleStage
 	} else {
-		dockerfileContent = `FROM maven:3 AS build
-WORKDIR /app
-COPY . .
-RUN mvn --batch-mode clean package -DskipTests
-
-FROM mcr.microsoft.com/openjdk/jdk:17-distroless
-WORKDIR /
-COPY --from=build /app/target/*.jar /app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]`
+		dockerfileContent = DockerfileMultiStage
 	}
 
 	if _, err = file.WriteString(dockerfileContent); err != nil {
