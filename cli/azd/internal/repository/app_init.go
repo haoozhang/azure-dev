@@ -1150,7 +1150,8 @@ func promptEventHubsName(console input.Console, ctx context.Context) (string, er
 		if IsValidEventhubsName(eventHubsName) {
 			return eventHubsName, nil
 		} else {
-			console.Message(ctx, "Invalid eventhubs name. Please choose another name.")
+			console.Message(ctx, "Invalid eventhubs name. it can contain letters, numbers, periods (.), "+
+				"hyphens (-), underscores (_), must begin and end with a letter or number. Please choose another name.")
 		}
 	}
 }
