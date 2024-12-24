@@ -22,7 +22,7 @@ words:
   - mysqladmin
   - sjad
   - configserver
-  - distroless
+  - elif
   - chardata
 languageSettings:
   - languageId: go
