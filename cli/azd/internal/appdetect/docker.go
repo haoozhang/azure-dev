@@ -84,19 +84,27 @@ func parsePortsInLine(s string) ([]Port, error) {
 }
 
 const (
-	DockerfileSingleStage = `FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+	DockerfileSingleStage = `FROM openjdk:17-jdk-slim
 COPY ./target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]`
+COPY ./target/*.war app.war
+ENTRYPOINT ["sh", "-c", \
+    "if [ -f /app.jar ]; then java -jar /app.jar; \
+    elif [ -f /app.war ]; then java -jar /app.war; \
+    else echo 'No JAR or WAR file found'; fi"]`
 
 	DockerfileMultiStage = `FROM maven:3 AS build
 WORKDIR /app
 COPY . .
 RUN mvn --batch-mode clean package -DskipTests
 
-FROM mcr.microsoft.com/openjdk/jdk:17-distroless
+FROM openjdk:17-jdk-slim
 WORKDIR /
-COPY --from=build /app/target/*.jar /app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]`
+COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/*.war app.war
+ENTRYPOINT ["sh", "-c", \
+    "if [ -f /app.jar ]; then java -jar /app.jar; \
+    elif [ -f /app.war ]; then java -jar /app.war; \
+    else echo 'No JAR or WAR file found'; fi"]`
 )
 
 func addDefaultDockerfile(path string, hasParentPom bool) error {
