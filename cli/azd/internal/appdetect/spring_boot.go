@@ -241,8 +241,9 @@ func detectEventHubsAccordingToSpringIntegrationEventhubsMavenDependency(
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:            false,
-			MavenDependencyType: SpringIntegrationEventHubs,
+			EventHubsNamePropertyMap: map[string]string{},
+			UseKafka:                 false,
+			MavenDependencyType:      SpringIntegrationEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -256,8 +257,9 @@ func detectEventHubsAccordingToSpringMessagingEventhubsMavenDependency(
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:            false,
-			MavenDependencyType: SpringMessagingEventHubs,
+			EventHubsNamePropertyMap: map[string]string{},
+			UseKafka:                 false,
+			MavenDependencyType:      SpringMessagingEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
@@ -291,9 +293,10 @@ func detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject *Project, s
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
-			UseKafka:            true,
-			SpringBootVersion:   springBootProject.springBootVersion,
-			MavenDependencyType: SpringMessagingEventHubs,
+			EventHubsNamePropertyMap: map[string]string{},
+			UseKafka:                 true,
+			SpringBootVersion:        springBootProject.springBootVersion,
+			MavenDependencyType:      SpringMessagingEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)

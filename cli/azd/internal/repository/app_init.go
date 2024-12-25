@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -1115,13 +1116,14 @@ func promptSpringBootVersion(console input.Console, ctx context.Context) (string
 func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context, eventHubs *appdetect.AzureDepEventHubs) {
 	switch eventHubs.MavenDependencyType {
 	case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
-		eventHubsName, err := promptEventHubsName(console, ctx)
+		eventHubsNames, err := promptEventHubsNames(console, ctx)
 		if err != nil {
 			console.Message(ctx, fmt.Sprintf("Error happened when prompt eventhubs name: %s.", err))
 			os.Exit(-1)
 		}
-		eventHubs.EventHubsNamePropertyMap = map[string]string{
-			string(eventHubs.MavenDependencyType): eventHubsName,
+		for i, eventHubsName := range eventHubsNames {
+			propertyName := string(eventHubs.MavenDependencyType) + strconv.Itoa(i)
+			eventHubs.EventHubsNamePropertyMap[propertyName] = eventHubsName
 		}
 	case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
 		promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")
@@ -1138,20 +1140,29 @@ func promptMissingPropertyAndExit(console input.Console, ctx context.Context, ke
 	os.Exit(0)
 }
 
-func promptEventHubsName(console input.Console, ctx context.Context) (string, error) {
+func promptEventHubsNames(console input.Console, ctx context.Context) ([]string, error) {
 	for {
-		eventHubsName, err := console.Prompt(ctx, input.ConsoleOptions{
-			Message: "Input the name of Azure EventHubs (Not EventHubs namespace name):",
-			Help:    "Hint: Azure EventHubs Name, not EventHubs namespace name",
+		eventHubsNamesInput, err := console.Prompt(ctx, input.ConsoleOptions{
+			Message: "Input the names of Azure Event Hubs (not the namespace name), " +
+				"if you have multiple ones, separate with commas:",
+			Help: "Hint: Azure Event Hubs Name, not the namespace name",
 		})
 		if err != nil {
-			return "", err
+			return []string{}, err
 		}
-		if IsValidEventhubsName(eventHubsName) {
-			return eventHubsName, nil
-		} else {
-			console.Message(ctx, "Invalid eventhubs name. it can contain letters, numbers, periods (.), "+
-				"hyphens (-), underscores (_), must begin and end with a letter or number. Please choose another name.")
+		eventHubsNames := strings.Split(eventHubsNamesInput, ",")
+		allValidEventHubsNames := true
+		for i, eventHubsName := range eventHubsNames {
+			eventHubsNames[i] = strings.TrimSpace(eventHubsName)
+			if !IsValidEventhubsName(eventHubsNames[i]) {
+				console.Message(ctx, "Invalid eventhubs name. it should contain letters, numbers, periods (.), "+
+					"hyphens (-), underscores (_), must begin and end with a letter or number. Please choose another name:")
+				allValidEventHubsNames = false
+				break
+			}
+		}
+		if allValidEventHubsNames {
+			return eventHubsNames, nil
 		}
 	}
 }
