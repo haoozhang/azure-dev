@@ -216,10 +216,20 @@ func detectEventHubsAccordingToSpringCloudEventhubsStarterMavenDependency(
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-starter-eventhubs"
-	var targetPropertyName = "spring.cloud.azure.eventhubs.event-hub-name"
+	// event-hub-name can be specified in different levels, see
+	// https://learn.microsoft.com/azure/developer/java/spring-framework/configuration-properties-azure-event-hubs
+	var targetPropertyNames = []string{
+		"spring.cloud.azure.eventhubs.event-hub-name",
+		"spring.cloud.azure.eventhubs.producer.event-hub-name",
+		"spring.cloud.azure.eventhubs.consumer.event-hub-name",
+		"spring.cloud.azure.eventhubs.processor.event-hub-name",
+	}
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
-		eventHubsNamePropertyMap := map[string]string{
-			targetPropertyName: springBootProject.applicationProperties[targetPropertyName],
+		eventHubsNamePropertyMap := map[string]string{}
+		for _, propertyName := range targetPropertyNames {
+			if propertyValue, ok := springBootProject.applicationProperties[propertyName]; ok {
+				eventHubsNamePropertyMap[propertyName] = propertyValue
+			}
 		}
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: eventHubsNamePropertyMap,

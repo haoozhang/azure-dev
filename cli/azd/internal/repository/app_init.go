@@ -1129,7 +1129,8 @@ func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context
 		promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")
 		os.Exit(0)
 	case appdetect.SpringCloudEventHubsStarter:
-		promptMissingPropertyAndExit(console, ctx, "spring.cloud.azure.eventhubs.event-hub-name")
+		promptMissingPropertyAndExit(console, ctx, "spring.cloud.azure.eventhubs.event-hub-name or "+
+			"spring.cloud.azure.eventhubs.[producer|consumer|processor].event-hub-name")
 		os.Exit(0)
 	}
 }
