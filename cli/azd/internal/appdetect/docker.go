@@ -85,7 +85,7 @@ func parsePortsInLine(s string) ([]Port, error) {
 }
 
 const (
-	DockerfileSingleStage = `FROM openjdk:17-jdk-slim
+	DockerfileSingleStage = `FROM openjdk:21-jdk-slim
 COPY ./target/*.jar app.jar
 COPY ./target/*.war app.war
 ENTRYPOINT ["sh", "-c", \
@@ -98,7 +98,7 @@ WORKDIR /app
 COPY . .
 RUN mvn --batch-mode clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /
 COPY --from=build /app/target/*.jar app.jar
 COPY --from=build /app/target/*.war app.war
