@@ -22,6 +22,7 @@ func detectDockerInDirectory(project Project, entries []fs.DirEntry) (*Docker, e
 
 	// if Dockerfile not exists, provide a default one
 	if project.Language == Java {
+		log.Printf("Dockerfile not found, will provide a default one")
 		_, hasParentPom := project.Options[JavaProjectOptionMavenParentPath]
 		err := addDefaultDockerfile(path, hasParentPom)
 		if err != nil {
