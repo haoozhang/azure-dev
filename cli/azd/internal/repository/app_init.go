@@ -464,6 +464,14 @@ func (i *Initializer) prjConfigFromDetect(
 				return config, err
 			}
 		}
+		// if java project no Dockerfile, add a default one
+		if svc.Language == appdetect.Java && svc.Docker == nil {
+			docker, err := appdetect.AddDefaultDockerfile(svc)
+			if err != nil {
+				return config, err
+			}
+			svc.Docker = docker
+		}
 	}
 
 	svcMapping := map[string]string{}

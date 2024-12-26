@@ -20,18 +20,6 @@ func detectDockerInDirectory(project Project, entries []fs.DirEntry) (*Docker, e
 		}
 	}
 
-	// if Dockerfile not exists, provide a default one
-	if project.Language == Java {
-		log.Printf("Dockerfile not found, will provide a default one")
-		_, hasParentPom := project.Options[JavaProjectOptionMavenParentPath]
-		err := addDefaultDockerfile(path, hasParentPom)
-		if err != nil {
-			return nil, err
-		}
-		dockerfilePath := filepath.Join(path, "Dockerfile")
-		return AnalyzeDocker(dockerfilePath)
-	}
-
 	return nil, nil
 }
 
@@ -84,6 +72,23 @@ func parsePortsInLine(s string) ([]Port, error) {
 	return ports, nil
 }
 
+func AddDefaultDockerfile(project Project) (*Docker, error) {
+	path := project.Path
+	// if Dockerfile not exists, provide a default one
+	if project.Language == Java {
+		log.Printf("Dockerfile not found, will provide a default one")
+		_, hasParentPom := project.Options[JavaProjectOptionMavenParentPath]
+		err := writeDockerfileIntoFs(path, hasParentPom)
+		if err != nil {
+			return nil, err
+		}
+		dockerfilePath := filepath.Join(path, "Dockerfile")
+		return AnalyzeDocker(dockerfilePath)
+	}
+
+	return nil, nil
+}
+
 const (
 	DockerfileSingleStage = `FROM openjdk:21-jdk-slim
 COPY ./target/*.jar app.jar
@@ -108,7 +113,7 @@ ENTRYPOINT ["sh", "-c", \
     else echo 'No JAR or WAR file found'; fi"]`
 )
 
-func addDefaultDockerfile(path string, hasParentPom bool) error {
+func writeDockerfileIntoFs(path string, hasParentPom bool) error {
 	if _, err := os.Stat(path); err != nil {
 		return fmt.Errorf("error accessing path %s: %w", path, err)
 	}
