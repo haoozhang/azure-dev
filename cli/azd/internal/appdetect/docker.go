@@ -89,6 +89,7 @@ func AddDefaultDockerfile(project Project) (*Docker, error) {
 	return nil, nil
 }
 
+// todo: hardcode jdk-21 as base image here, may need more accurate java version detection.
 const (
 	DockerfileSingleStage = `FROM openjdk:21-jdk-slim
 COPY ./target/*.jar app.jar
