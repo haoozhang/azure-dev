@@ -21,6 +21,9 @@ type mavenWrapper struct {
 	winPath   string
 }
 
+// JavaProjectOptionMavenPath The project path of the maven single-module project
+const JavaProjectOptionMavenPath = "path"
+
 // JavaProjectOptionMavenParentPath The parent module path of the maven multi-module project
 const JavaProjectOptionMavenParentPath = "parentPath"
 
@@ -77,6 +80,12 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			if parentPom != nil {
 				project.Options = map[string]interface{}{
 					JavaProjectOptionMavenParentPath:       parentPom.path,
+					JavaProjectOptionPosixMavenWrapperPath: currentWrapper.posixPath,
+					JavaProjectOptionWinMavenWrapperPath:   currentWrapper.winPath,
+				}
+			} else {
+				project.Options = map[string]interface{}{
+					JavaProjectOptionMavenPath:             path,
 					JavaProjectOptionPosixMavenWrapperPath: currentWrapper.posixPath,
 					JavaProjectOptionWinMavenWrapperPath:   currentWrapper.winPath,
 				}

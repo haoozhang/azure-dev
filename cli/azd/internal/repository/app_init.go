@@ -911,11 +911,18 @@ func (i *Initializer) addMavenBuildHook(
 	wrapperPathMap := map[string][]string{}
 
 	for _, prj := range detect.Services {
-		if prj.Language == appdetect.Java && prj.Options["parentPath"] != nil {
-			parentPath := prj.Options[appdetect.JavaProjectOptionMavenParentPath].(string)
-			posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
-			winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
-			wrapperPathMap[parentPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
+		if prj.Language == appdetect.Java {
+			if prj.Options["parentPath"] != nil {
+				parentPath := prj.Options[appdetect.JavaProjectOptionMavenParentPath].(string)
+				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
+				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
+				wrapperPathMap[parentPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
+			} else {
+				prjPath := prj.Options[appdetect.JavaProjectOptionMavenPath].(string)
+				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
+				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
+				wrapperPathMap[prjPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
+			}
 		}
 	}
 
