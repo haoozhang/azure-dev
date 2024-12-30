@@ -13,6 +13,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/azure/azure-dev/cli/azd/internal"
@@ -198,6 +199,17 @@ func (p *dockerProject) Build(
 ) (*ServiceBuildResult, error) {
 	if serviceConfig.Docker.RemoteBuild || useDotnetPublishForDockerBuild(serviceConfig) {
 		return &ServiceBuildResult{Restore: restoreOutput}, nil
+	}
+
+	// if java project no Dockerfile, add a default one for Docker build
+	if serviceConfig.Language == ServiceLanguageJava && serviceConfig.Docker.Path == "" {
+		defaultDockerfilePath, err := addDefaultDockerfileForJava(*serviceConfig)
+		if err != nil {
+			return nil, err
+		}
+		serviceConfig.Docker = DockerProjectOptions{
+			Path: defaultDockerfilePath,
+		}
 	}
 
 	dockerOptions := getDockerOptionsWithDefaults(serviceConfig.Docker)
@@ -618,4 +630,84 @@ func getDockerOptionsWithDefaults(options DockerProjectOptions) DockerProjectOpt
 	}
 
 	return options
+}
+
+func addDefaultDockerfileForJava(serviceConfig ServiceConfig) (string, error) {
+	// if Dockerfile not exists, provide a default one
+	if serviceConfig.Language == ServiceLanguageJava {
+		log.Printf(fmt.Sprintf("Dockerfile not found for java project %s, will provide a default one",
+			serviceConfig.Name))
+		dockerfileDir, err := os.MkdirTemp("", fmt.Sprintf("%s-%d", serviceConfig.Name, time.Now().Unix()))
+		if err != nil {
+			return "", fmt.Errorf("error creating temp Dockerfile directory: %w", err)
+		}
+		hasParent := serviceConfig.ParentPath != ""
+		dockerfilePath, err := writeDockerfileIntoFs(dockerfileDir, hasParent)
+		if err != nil {
+			return "", err
+		}
+		return dockerfilePath, nil
+	}
+
+	return "", fmt.Errorf("adding default Dockerfile is not supported for language: %s", serviceConfig.Language)
+}
+
+// todo: hardcode jdk-21 as base image here, may need more accurate java version detection.
+const (
+	DockerfileSingleStage = `FROM openjdk:21-jdk-slim
+COPY ./target/*.jar app.jar
+COPY ./target/*.war app.war
+ENTRYPOINT ["sh", "-c", \
+    "if [ -f /app.jar ]; then java -jar /app.jar; \
+    elif [ -f /app.war ]; then java -jar /app.war; \
+    else echo 'No JAR or WAR file found'; fi"]`
+
+	DockerfileMultiStage = `FROM maven:3 AS build
+WORKDIR /app
+COPY . .
+RUN mvn --batch-mode clean package -DskipTests
+
+FROM openjdk:21-jdk-slim
+WORKDIR /
+COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/*.war app.war
+ENTRYPOINT ["sh", "-c", \
+    "if [ -f /app.jar ]; then java -jar /app.jar; \
+    elif [ -f /app.war ]; then java -jar /app.war; \
+    else echo 'No JAR or WAR file found'; fi"]`
+)
+
+func writeDockerfileIntoFs(path string, hasParent bool) (string, error) {
+	if _, err := os.Stat(path); err != nil {
+		return "", fmt.Errorf("error accessing path %s: %w", path, err)
+	}
+
+	dockerfilePath := filepath.Join(path, "Dockerfile")
+	if _, err := os.Stat(dockerfilePath); err == nil {
+		fmt.Println("Dockerfile already exists, skipping creation.")
+		return dockerfilePath, nil
+	} else if !os.IsNotExist(err) {
+		return "", fmt.Errorf("error checking Dockerfile at path %s: %w", path, err)
+	}
+
+	file, err := os.Create(dockerfilePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to create Dockerfile at %s: %w", dockerfilePath, err)
+	}
+	defer file.Close()
+
+	// for single-module project, we have to run 'mvn package' first, then copy and run jar
+	// for multi-module project, just copy and run jar because 'mvn package' already executed in prepackage hook
+	var dockerfileContent string
+	if hasParent {
+		dockerfileContent = DockerfileSingleStage
+	} else {
+		dockerfileContent = DockerfileMultiStage
+	}
+
+	if _, err = file.WriteString(dockerfileContent); err != nil {
+		return "", fmt.Errorf("failed to write Dockerfile at %s: %w", dockerfilePath, err)
+	}
+
+	return dockerfilePath, nil
 }
