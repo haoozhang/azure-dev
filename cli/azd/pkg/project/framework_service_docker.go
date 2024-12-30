@@ -202,7 +202,7 @@ func (p *dockerProject) Build(
 	// if java project no Dockerfile, add a default one for Docker build
 	if serviceConfig.Language == ServiceLanguageJava && serviceConfig.Docker.Path == "" {
 		log.Printf("Dockerfile not found for java project %s, will provide a default one", serviceConfig.Name)
-		defaultDockerfilePath, err := addDefaultDockerfileForJavaProject()
+		defaultDockerfilePath, err := addDefaultDockerfileForJavaProject(serviceConfig.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -638,8 +638,8 @@ ENTRYPOINT ["sh", "-c", \
     "if [ -f /app.jar ]; then java -jar /app.jar; \
     else echo 'Error: No JAR file found' >&2; exit 1; fi"]`
 
-func addDefaultDockerfileForJavaProject() (string, error) {
-	dockerfileDir, err := os.MkdirTemp("", "azd-docker-build")
+func addDefaultDockerfileForJavaProject(svcName string) (string, error) {
+	dockerfileDir, err := os.MkdirTemp("", svcName)
 	if err != nil {
 		return "", fmt.Errorf("error creating temp Dockerfile directory: %w", err)
 	}
