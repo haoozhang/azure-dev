@@ -8,6 +8,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
+
+	"go.opentelemetry.io/otel/trace"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/azure/azure-dev/cli/azd/internal"
 	"github.com/azure/azure-dev/cli/azd/internal/appdetect"
@@ -25,12 +33,6 @@ import (
 	"github.com/azure/azure-dev/cli/azd/pkg/tools"
 	"github.com/azure/azure-dev/cli/azd/pkg/tools/docker"
 	"github.com/azure/azure-dev/cli/azd/pkg/tools/pack"
-	"go.opentelemetry.io/otel/trace"
-	"log"
-	"os"
-	"path"
-	"path/filepath"
-	"strings"
 )
 
 type DockerProjectOptions struct {

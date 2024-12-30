@@ -912,13 +912,13 @@ func (i *Initializer) addMavenBuildHook(
 
 	for _, prj := range detect.Services {
 		if prj.Language == appdetect.Java {
-			if prj.Options["parentPath"] != nil {
-				parentPath := prj.Options[appdetect.JavaProjectOptionMavenParentPath].(string)
+			if prj.Options[appdetect.JavaProjectOptionParentPomDir] != nil {
+				parentPath := prj.Options[appdetect.JavaProjectOptionParentPomDir].(string)
 				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
 				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
 				wrapperPathMap[parentPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
 			} else {
-				prjPath := prj.Options[appdetect.JavaProjectOptionMavenPath].(string)
+				prjPath := prj.Options[appdetect.JavaProjectOptionCurrentPomDir].(string)
 				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
 				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
 				wrapperPathMap[prjPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
@@ -1014,7 +1014,7 @@ func ServiceFromDetect(
 
 	svc.Language = language
 
-	if parentPath, ok := prj.Options[appdetect.JavaProjectOptionMavenParentPath].(string); ok && parentPath != "" {
+	if parentPath, ok := prj.Options[appdetect.JavaProjectOptionParentPomDir].(string); ok && parentPath != "" {
 		svc.ParentPath = parentPath
 	}
 
