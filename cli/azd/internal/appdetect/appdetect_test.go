@@ -40,6 +40,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Options: map[string]interface{}{
+						JavaProjectOptionMavenPath:             filepath.Join(dir, "java"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,
@@ -162,6 +167,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Options: map[string]interface{}{
+						JavaProjectOptionMavenPath:             filepath.Join(dir, "java"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,
@@ -233,6 +243,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Options: map[string]interface{}{
+						JavaProjectOptionMavenPath:             filepath.Join(dir, "java"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,
@@ -307,6 +322,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
+					Options: map[string]interface{}{
+						JavaProjectOptionMavenPath:             filepath.Join(dir, "java"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,

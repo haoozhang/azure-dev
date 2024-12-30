@@ -22,7 +22,6 @@ words:
   - mysqladmin
   - sjad
   - configserver
-  - elif
   - chardata
 languageSettings:
   - languageId: go

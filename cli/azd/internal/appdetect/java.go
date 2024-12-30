@@ -86,8 +86,8 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			} else {
 				project.Options = map[string]interface{}{
 					JavaProjectOptionMavenPath:             path,
-					JavaProjectOptionPosixMavenWrapperPath: currentWrapper.posixPath,
-					JavaProjectOptionWinMavenWrapperPath:   currentWrapper.winPath,
+					JavaProjectOptionPosixMavenWrapperPath: detectMavenWrapper(path, "mvnw"),
+					JavaProjectOptionWinMavenWrapperPath:   detectMavenWrapper(path, "mvnw.cmd"),
 				}
 			}
 
