@@ -92,6 +92,8 @@ func (f Dependency) Display() string {
 		return "Vite"
 	case JsNext:
 		return "Next.js"
+	case SpringFrontend:
+		return "Spring Frontend"
 	}
 
 	return ""
@@ -172,6 +174,7 @@ func (a AzureDepStorageAccount) ResourceDisplay() string {
 
 type Metadata struct {
 	ApplicationName                                         string
+	ServerPort                                              string
 	DatabaseNameInPropertySpringDatasourceUrl               map[DatabaseDep]string
 	ContainsDependencySpringCloudAzureStarter               bool
 	ContainsDependencySpringCloudAzureStarterJdbcPostgresql bool
@@ -181,8 +184,6 @@ type Metadata struct {
 	ContainsDependencySpringCloudConfigServer               bool
 	ContainsDependencySpringCloudConfigClient               bool
 }
-
-const UnknownSpringBootVersion string = "unknownSpringBootVersion"
 
 type Project struct {
 	// The language associated with the project.

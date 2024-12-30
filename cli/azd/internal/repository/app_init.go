@@ -741,7 +741,7 @@ func (i *Initializer) prjConfigFromDetect(
 				Port: -1,
 			}
 
-			port, err := PromptPort(i.console, ctx, name, svc)
+			port, err := GetOrPromptPort(i.console, ctx, name, svc)
 			if err != nil {
 				return config, err
 			}
@@ -988,7 +988,7 @@ func ServiceFromDetect(
 	svcName string,
 	prj appdetect.Project) (project.ServiceConfig, error) {
 	svc := project.ServiceConfig{
-		Name: svcName,
+		Name: names.LabelName(svcName),
 	}
 	rel, err := filepath.Rel(root, prj.Path)
 	if err != nil {
