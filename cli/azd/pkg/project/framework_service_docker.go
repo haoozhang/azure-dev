@@ -635,8 +635,7 @@ func getDockerOptionsWithDefaults(options DockerProjectOptions) DockerProjectOpt
 func addDefaultDockerfileForJava(serviceConfig ServiceConfig) (string, error) {
 	// if Dockerfile not exists, provide a default one
 	if serviceConfig.Language == ServiceLanguageJava {
-		log.Printf(fmt.Sprintf("Dockerfile not found for java project %s, will provide a default one",
-			serviceConfig.Name))
+		log.Printf("Dockerfile not found for java project %s, will provide a default one", serviceConfig.Name)
 		dockerfileDir, err := os.MkdirTemp("", fmt.Sprintf("%s-%d", serviceConfig.Name, time.Now().Unix()))
 		if err != nil {
 			return "", fmt.Errorf("error creating temp Dockerfile directory: %w", err)
