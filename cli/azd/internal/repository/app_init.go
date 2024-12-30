@@ -747,16 +747,18 @@ func (i *Initializer) prjConfigFromDetect(
 				Port: -1,
 			}
 
-			port, err := PromptPort(i.console, ctx, name, svc)
+			port, err := GetOrPromptPort(i.console, ctx, name, svc)
 			if err != nil {
 				return config, err
 			}
 			props.Port = port
 
-			if svc.Metadata.ContainsDependencySpringCloudEurekaClient {
+			if svc.Metadata.ContainsDependencySpringCloudEurekaClient &&
+				javaEurekaServerService.Name != "" {
 				resSpec.Uses = append(resSpec.Uses, javaEurekaServerService.Name)
 			}
-			if svc.Metadata.ContainsDependencySpringCloudConfigClient {
+			if svc.Metadata.ContainsDependencySpringCloudConfigClient &&
+				javaConfigServerService.Name != "" {
 				resSpec.Uses = append(resSpec.Uses, javaConfigServerService.Name)
 			}
 
@@ -985,7 +987,7 @@ func ServiceFromDetect(
 	svcName string,
 	prj appdetect.Project) (project.ServiceConfig, error) {
 	svc := project.ServiceConfig{
-		Name: svcName,
+		Name: names.LabelName(svcName),
 	}
 	rel, err := filepath.Rel(root, prj.Path)
 	if err != nil {
@@ -1010,6 +1012,10 @@ func ServiceFromDetect(
 	}
 
 	svc.Language = language
+
+	if parentPath, ok := prj.Options[appdetect.JavaProjectOptionMavenParentPath].(string); ok && parentPath != "" {
+		svc.ParentPath = parentPath
+	}
 
 	if prj.Docker != nil {
 		relDocker, err := filepath.Rel(prj.Path, prj.Docker.Path)
@@ -1181,6 +1187,10 @@ func IsValidEventhubsName(name string) bool {
 }
 
 func appendJavaEurekaServerEnv(svc *project.ServiceConfig, eurekaServerName string) error {
+	if eurekaServerName == "" {
+		// eureka server not found, maybe removed when detect confirm
+		return nil
+	}
 	if svc.Env == nil {
 		svc.Env = map[string]string{}
 	}
@@ -1192,6 +1202,10 @@ func appendJavaEurekaServerEnv(svc *project.ServiceConfig, eurekaServerName stri
 }
 
 func appendJavaConfigServerEnv(svc *project.ServiceConfig, configServerName string) error {
+	if configServerName == "" {
+		// config server not found, maybe removed when detect confirm
+		return nil
+	}
 	if svc.Env == nil {
 		svc.Env = map[string]string{}
 	}
