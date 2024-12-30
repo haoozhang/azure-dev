@@ -300,7 +300,7 @@ func detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject *Project, s
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
 			UseKafka:                 true,
-			SpringBootVersion:        springBootProject.springBootVersion,
+			SpringBootVersion:        detectSpringBootVersion(springBootProject.pom),
 			MavenDependencyType:      SpringMessagingEventHubs,
 		}
 		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
