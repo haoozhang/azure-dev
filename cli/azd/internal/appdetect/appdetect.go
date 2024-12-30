@@ -326,7 +326,7 @@ func detectAny(ctx context.Context, detectors []projectDetector, path string, en
 			log.Printf("Found project %s at %s", project.Language, path)
 
 			// docker is an optional property of a project, and thus is different from other detectors
-			docker, err := detectDockerInDirectory(*project, entries)
+			docker, err := detectDockerInDirectory(path, entries)
 			if err != nil {
 				return nil, fmt.Errorf("detecting docker project: %w", err)
 			}

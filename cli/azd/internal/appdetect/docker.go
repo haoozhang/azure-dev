@@ -11,8 +11,7 @@ import (
 	"strings"
 )
 
-func detectDockerInDirectory(project Project, entries []fs.DirEntry) (*Docker, error) {
-	path := project.Path
+func detectDockerInDirectory(path string, entries []fs.DirEntry) (*Docker, error) {
 	for _, entry := range entries {
 		if strings.ToLower(entry.Name()) == "dockerfile" {
 			dockerFilePath := filepath.Join(path, entry.Name())
