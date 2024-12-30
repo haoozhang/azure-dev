@@ -1147,6 +1147,7 @@ func promptMissingPropertyAndExit(console input.Console, ctx context.Context, ke
 	os.Exit(0)
 }
 
+// todo: delete this after we implement to detect eventhubs names from code
 func promptEventHubsNames(console input.Console, ctx context.Context) ([]string, error) {
 	for {
 		eventHubsNamesInput, err := console.Prompt(ctx, input.ConsoleOptions{
