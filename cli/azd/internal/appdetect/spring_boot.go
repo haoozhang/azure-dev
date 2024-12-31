@@ -332,7 +332,7 @@ func detectStorageAccountAccordingToSpringCloudStreamBinderMavenDependencyAndPro
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-stream-binder-eventhubs"
-	var targetPropertyName = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
+	var targetPropertyNameSuffix = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		bindingDestinations := getBindingDestinationMap(springBootProject.applicationProperties)
 		containsInBindingName := ""
@@ -344,7 +344,7 @@ func detectStorageAccountAccordingToSpringCloudStreamBinderMavenDependencyAndPro
 		}
 		if containsInBindingName != "" {
 			detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
-				targetGroupId, targetArtifactId, targetPropertyName,
+				targetGroupId, targetArtifactId, targetPropertyNameSuffix,
 				"binding name ["+containsInBindingName+"] contains '-in-'")
 		}
 	}
@@ -354,10 +354,10 @@ func detectStorageAccountAccordingToSpringIntegrationEventhubsMavenDependencyAnd
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-cloud-azure-starter-integration-eventhubs"
-	var targetPropertyName = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
+	var targetPropertyNameSuffix = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
-			targetGroupId, targetArtifactId, targetPropertyName, "")
+			targetGroupId, targetArtifactId, targetPropertyNameSuffix, "")
 	}
 }
 
@@ -365,18 +365,18 @@ func detectStorageAccountAccordingToSpringMessagingEventhubsMavenDependencyAndPr
 	azdProject *Project, springBootProject *SpringBootProject) {
 	var targetGroupId = "com.azure.spring"
 	var targetArtifactId = "spring-messaging-azure-eventhubs"
-	var targetPropertyName = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
+	var targetPropertyNameSuffix = "spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name"
 	if hasDependency(springBootProject, targetGroupId, targetArtifactId) {
 		detectStorageAccountAccordingToProperty(azdProject, springBootProject.applicationProperties,
-			targetGroupId, targetArtifactId, targetPropertyName, "")
+			targetGroupId, targetArtifactId, targetPropertyNameSuffix, "")
 	}
 }
 
 func detectStorageAccountAccordingToProperty(azdProject *Project, applicationProperties map[string]string,
-	targetGroupId string, targetArtifactId string, targetPropertyName string, extraCondition string) {
+	targetGroupId string, targetArtifactId string, targetPropertyNameSuffix string, extraCondition string) {
 	containerNamePropertyMap := make(map[string]string)
 	for key, value := range applicationProperties {
-		if strings.HasSuffix(key, targetPropertyName) {
+		if strings.HasSuffix(key, targetPropertyNameSuffix) {
 			containerNamePropertyMap[key] = value
 		}
 	}
