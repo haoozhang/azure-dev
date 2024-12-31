@@ -201,7 +201,7 @@ func (p *dockerProject) Build(
 		return &ServiceBuildResult{Restore: restoreOutput}, nil
 	}
 
-	// if java project no Dockerfile, add a default one for Docker build
+	// if it's a java project without Dockerfile, add a default one for Docker build
 	if serviceConfig.Language == ServiceLanguageJava && serviceConfig.Docker.Path == "" {
 		log.Printf("Dockerfile not found for java project %s, will provide a default one", serviceConfig.Name)
 		defaultDockerfilePath, err := addDefaultDockerfileForJavaProject(serviceConfig.Name)
@@ -635,10 +635,8 @@ func getDockerOptionsWithDefaults(options DockerProjectOptions) DockerProjectOpt
 
 // todo: hardcode jdk-21 as base image here, may need more accurate java version detection.
 const DefaultDockerfileForJavaProject = `FROM openjdk:21-jdk-slim
-COPY ./target/*.jar app.jar
-ENTRYPOINT ["sh", "-c", \
-    "if [ -f /app.jar ]; then java -jar /app.jar; \
-    else echo 'Error: No JAR file found' >&2; exit 1; fi"]`
+COPY ./target/*.jar /app.jar
+ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]`
 
 func addDefaultDockerfileForJavaProject(svcName string) (string, error) {
 	dockerfileDir, err := os.MkdirTemp("", svcName)
