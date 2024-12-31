@@ -156,7 +156,7 @@ func (a AzureDepServiceBus) ResourceDisplay() string {
 
 type AzureDepEventHubs struct {
 	EventHubsNamePropertyMap map[string]string
-	FromDependency           []DependencyType
+	DependencyTypes          []DependencyType
 	SpringBootVersion        string
 }
 
@@ -172,8 +172,8 @@ const (
 )
 
 func (a AzureDepEventHubs) UseKafka() bool {
-	for _, dep := range a.FromDependency {
-		if dep == SpringCloudStreamKafka || dep == SpringKafka {
+	for _, dependencyType := range a.DependencyTypes {
+		if dependencyType == SpringCloudStreamKafka || dependencyType == SpringKafka {
 			return true
 		}
 	}

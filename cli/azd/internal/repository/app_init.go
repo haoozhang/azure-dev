@@ -1127,8 +1127,8 @@ func promptSpringBootVersion(console input.Console, ctx context.Context) (string
 }
 
 func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context, eventHubs *appdetect.AzureDepEventHubs) {
-	for _, fromDependency := range eventHubs.FromDependency {
-		switch fromDependency {
+	for _, dependencyType := range eventHubs.DependencyTypes {
+		switch dependencyType {
 		case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
 			eventHubsNames, err := promptEventHubsNames(console, ctx)
 			if err != nil {
@@ -1136,7 +1136,7 @@ func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context
 				os.Exit(-1)
 			}
 			for i, eventHubsName := range eventHubsNames {
-				propertyName := string(fromDependency) + strconv.Itoa(i)
+				propertyName := string(dependencyType) + strconv.Itoa(i)
 				eventHubs.EventHubsNamePropertyMap[propertyName] = eventHubsName
 			}
 		case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
