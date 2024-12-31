@@ -1127,24 +1127,26 @@ func promptSpringBootVersion(console input.Console, ctx context.Context) (string
 }
 
 func promptMissingEventHubsNameOrExit(console input.Console, ctx context.Context, eventHubs *appdetect.AzureDepEventHubs) {
-	switch eventHubs.MavenDependencyType {
-	case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
-		eventHubsNames, err := promptEventHubsNames(console, ctx)
-		if err != nil {
-			console.Message(ctx, fmt.Sprintf("Error happened when prompt eventhubs name: %s.", err))
-			os.Exit(-1)
+	for _, fromDependency := range eventHubs.FromDependency {
+		switch fromDependency {
+		case appdetect.SpringIntegrationEventHubs, appdetect.SpringMessagingEventHubs, appdetect.SpringKafka:
+			eventHubsNames, err := promptEventHubsNames(console, ctx)
+			if err != nil {
+				console.Message(ctx, fmt.Sprintf("Error happened when prompt eventhubs name: %s.", err))
+				os.Exit(-1)
+			}
+			for i, eventHubsName := range eventHubsNames {
+				propertyName := string(fromDependency) + strconv.Itoa(i)
+				eventHubs.EventHubsNamePropertyMap[propertyName] = eventHubsName
+			}
+		case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
+			promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")
+			os.Exit(0)
+		case appdetect.SpringCloudEventHubsStarter:
+			promptMissingPropertyAndExit(console, ctx, "spring.cloud.azure.eventhubs.event-hub-name or "+
+				"spring.cloud.azure.eventhubs.[producer|consumer|processor].event-hub-name")
+			os.Exit(0)
 		}
-		for i, eventHubsName := range eventHubsNames {
-			propertyName := string(eventHubs.MavenDependencyType) + strconv.Itoa(i)
-			eventHubs.EventHubsNamePropertyMap[propertyName] = eventHubsName
-		}
-	case appdetect.SpringCloudStreamEventHubs, appdetect.SpringCloudStreamKafka:
-		promptMissingPropertyAndExit(console, ctx, "spring.cloud.stream.bindings.<binding name>.destination")
-		os.Exit(0)
-	case appdetect.SpringCloudEventHubsStarter:
-		promptMissingPropertyAndExit(console, ctx, "spring.cloud.azure.eventhubs.event-hub-name or "+
-			"spring.cloud.azure.eventhubs.[producer|consumer|processor].event-hub-name")
-		os.Exit(0)
 	}
 }
 
@@ -1169,7 +1171,7 @@ func promptEventHubsNames(console input.Console, ctx context.Context) ([]string,
 		allValidEventHubsNames := true
 		for i, eventHubsName := range eventHubsNames {
 			eventHubsNames[i] = strings.TrimSpace(eventHubsName)
-			if !IsValidEventhubsName(eventHubsNames[i]) {
+			if !isValidEventhubsName(eventHubsNames[i]) {
 				console.Message(ctx, "Invalid eventhubs name. it should contain letters, numbers, periods (.), "+
 					"hyphens (-), underscores (_), must begin and end with a letter or number. Please choose another name:")
 				allValidEventHubsNames = false
@@ -1186,7 +1188,7 @@ func promptEventHubsNames(console input.Console, ctx context.Context) ([]string,
 // must begin and end with a letter or number
 var eventHubsNameRegex = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$`)
 
-func IsValidEventhubsName(name string) bool {
+func isValidEventhubsName(name string) bool {
 	// up to 256 characters
 	if len(name) == 0 || len(name) > 256 {
 		return false

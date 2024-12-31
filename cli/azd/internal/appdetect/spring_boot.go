@@ -196,9 +196,9 @@ func detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: bindingDestinations,
 			UseKafka:                 false,
-			MavenDependencyType:      SpringCloudStreamEventHubs,
+			FromDependency:           []DependencyType{SpringCloudStreamEventHubs},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 		for bindingName, destination := range bindingDestinations {
 			log.Printf("  Detected Event Hub [%s] for binding [%s] by analyzing property file.",
@@ -229,9 +229,9 @@ func detectEventHubsAccordingToSpringCloudEventhubsStarterMavenDependency(
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: eventHubsNamePropertyMap,
 			UseKafka:                 false,
-			MavenDependencyType:      SpringCloudEventHubsStarter,
+			FromDependency:           []DependencyType{SpringCloudEventHubsStarter},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 		for property, name := range eventHubsNamePropertyMap {
 			log.Printf("  Detected Event Hub [%s] for [%s] by analyzing property file.", property, name)
@@ -248,9 +248,9 @@ func detectEventHubsAccordingToSpringIntegrationEventhubsMavenDependency(
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
 			UseKafka:                 false,
-			MavenDependencyType:      SpringIntegrationEventHubs,
+			FromDependency:           []DependencyType{SpringIntegrationEventHubs},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 	}
 }
@@ -264,9 +264,9 @@ func detectEventHubsAccordingToSpringMessagingEventhubsMavenDependency(
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
 			UseKafka:                 false,
-			MavenDependencyType:      SpringMessagingEventHubs,
+			FromDependency:           []DependencyType{SpringMessagingEventHubs},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 	}
 }
@@ -281,9 +281,9 @@ func detectEventHubsAccordingToSpringCloudStreamKafkaMavenDependency(
 			EventHubsNamePropertyMap: bindingDestinations,
 			UseKafka:                 true,
 			SpringBootVersion:        detectSpringBootVersion(springBootProject.pom),
-			MavenDependencyType:      SpringCloudStreamKafka,
+			FromDependency:           []DependencyType{SpringCloudStreamKafka},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 		for bindingName, destination := range bindingDestinations {
 			log.Printf("  Detected Kafka Topic [%s] for binding [%s] by analyzing property file.",
@@ -301,11 +301,32 @@ func detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject *Project, s
 			EventHubsNamePropertyMap: map[string]string{},
 			UseKafka:                 true,
 			SpringBootVersion:        detectSpringBootVersion(springBootProject.pom),
-			MavenDependencyType:      SpringMessagingEventHubs,
+			FromDependency:           []DependencyType{SpringKafka},
 		}
-		azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
+		addAzureDepEventHubsIntoProject(azdProject, newDep)
 		logServiceAddedAccordingToMavenDependency(newDep.ResourceDisplay(), targetGroupId, targetArtifactId)
 	}
+}
+
+func addAzureDepEventHubsIntoProject(
+	azdProject *Project,
+	newDep AzureDepEventHubs) {
+	for index, azureDep := range azdProject.AzureDeps {
+		if azureDep, ok := azureDep.(AzureDepEventHubs); ok {
+			// already have existing dependency
+			for property, eventHubsName := range newDep.EventHubsNamePropertyMap {
+				azureDep.EventHubsNamePropertyMap[property] = eventHubsName
+			}
+			azureDep.FromDependency = append(azureDep.FromDependency, newDep.FromDependency...)
+			azureDep.UseKafka = newDep.UseKafka
+			azureDep.SpringBootVersion = newDep.SpringBootVersion
+			azdProject.AzureDeps[index] = azureDep
+			return
+		}
+	}
+
+	// add new dependency
+	azdProject.AzureDeps = append(azdProject.AzureDeps, newDep)
 }
 
 func detectStorageAccount(azdProject *Project, springBootProject *SpringBootProject) {
