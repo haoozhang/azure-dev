@@ -195,7 +195,6 @@ func detectEventHubsAccordingToSpringCloudStreamBinderMavenDependency(
 		bindingDestinations := getBindingDestinationMap(springBootProject.applicationProperties)
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: bindingDestinations,
-			UseKafka:                 false,
 			FromDependency:           []DependencyType{SpringCloudStreamEventHubs},
 		}
 		addAzureDepEventHubsIntoProject(azdProject, newDep)
@@ -228,7 +227,6 @@ func detectEventHubsAccordingToSpringCloudEventhubsStarterMavenDependency(
 		}
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: eventHubsNamePropertyMap,
-			UseKafka:                 false,
 			FromDependency:           []DependencyType{SpringCloudEventHubsStarter},
 		}
 		addAzureDepEventHubsIntoProject(azdProject, newDep)
@@ -247,7 +245,6 @@ func detectEventHubsAccordingToSpringIntegrationEventhubsMavenDependency(
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
-			UseKafka:                 false,
 			FromDependency:           []DependencyType{SpringIntegrationEventHubs},
 		}
 		addAzureDepEventHubsIntoProject(azdProject, newDep)
@@ -263,7 +260,6 @@ func detectEventHubsAccordingToSpringMessagingEventhubsMavenDependency(
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
-			UseKafka:                 false,
 			FromDependency:           []DependencyType{SpringMessagingEventHubs},
 		}
 		addAzureDepEventHubsIntoProject(azdProject, newDep)
@@ -279,7 +275,6 @@ func detectEventHubsAccordingToSpringCloudStreamKafkaMavenDependency(
 		bindingDestinations := getBindingDestinationMap(springBootProject.applicationProperties)
 		newDep := AzureDepEventHubs{
 			EventHubsNamePropertyMap: bindingDestinations,
-			UseKafka:                 true,
 			SpringBootVersion:        detectSpringBootVersion(springBootProject.pom),
 			FromDependency:           []DependencyType{SpringCloudStreamKafka},
 		}
@@ -299,7 +294,6 @@ func detectEventHubsAccordingToSpringKafkaMavenDependency(azdProject *Project, s
 		newDep := AzureDepEventHubs{
 			// eventhubs name is empty here because no configured property
 			EventHubsNamePropertyMap: map[string]string{},
-			UseKafka:                 true,
 			SpringBootVersion:        detectSpringBootVersion(springBootProject.pom),
 			FromDependency:           []DependencyType{SpringKafka},
 		}
@@ -318,7 +312,6 @@ func addAzureDepEventHubsIntoProject(
 				azureDep.EventHubsNamePropertyMap[property] = eventHubsName
 			}
 			azureDep.FromDependency = append(azureDep.FromDependency, newDep.FromDependency...)
-			azureDep.UseKafka = newDep.UseKafka
 			azureDep.SpringBootVersion = newDep.SpringBootVersion
 			azdProject.AzureDeps[index] = azureDep
 			return

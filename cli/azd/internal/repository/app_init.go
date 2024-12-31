@@ -143,7 +143,7 @@ func (i *Initializer) InitFromApp(
 			for depIndex, dep := range prj.AzureDeps {
 				if eventHubs, ok := dep.(appdetect.AzureDepEventHubs); ok {
 					// prompt spring boot version if not detected for kafka
-					if eventHubs.UseKafka {
+					if eventHubs.UseKafka() {
 						hasKafkaDep = true
 						springBootVersion := eventHubs.SpringBootVersion
 						if springBootVersion == appdetect.UnknownSpringBootVersion {
@@ -705,7 +705,7 @@ func (i *Initializer) prjConfigFromDetect(
 					},
 				}
 			case appdetect.AzureDepEventHubs:
-				if azureDep.UseKafka {
+				if azureDep.UseKafka() {
 					config.Resources["kafka"] = &project.ResourceConfig{
 						Type: project.ResourceTypeMessagingKafka,
 						Props: project.KafkaProps{
@@ -776,7 +776,7 @@ func (i *Initializer) prjConfigFromDetect(
 				case appdetect.AzureDepServiceBus:
 					resSpec.Uses = append(resSpec.Uses, "servicebus")
 				case appdetect.AzureDepEventHubs:
-					if azureDep.UseKafka {
+					if azureDep.UseKafka() {
 						resSpec.Uses = append(resSpec.Uses, "kafka")
 					} else {
 						resSpec.Uses = append(resSpec.Uses, "eventhubs")
@@ -1094,7 +1094,7 @@ func processSpringCloudAzureDepByPrompt(console input.Console, ctx context.Conte
 		// remove Kafka Azure Dep
 		var result []appdetect.AzureDep
 		for _, dep := range project.AzureDeps {
-			if eventHubs, ok := dep.(appdetect.AzureDepEventHubs); !(ok && eventHubs.UseKafka) {
+			if eventHubs, ok := dep.(appdetect.AzureDepEventHubs); !(ok && eventHubs.UseKafka()) {
 				result = append(result, dep)
 			}
 		}
