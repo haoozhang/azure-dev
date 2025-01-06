@@ -74,6 +74,14 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
+					Path:          "java-multi-levels/submodule/subsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
+					Metadata: Metadata{
+						ApplicationName: "subsubmodule3",
+					},
+				},
+				{
+					Language:      Java,
 					Path:          "java-multimodules/application",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					DatabaseDeps: []DatabaseDep{
@@ -201,6 +209,14 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
+					Path:          "java-multi-levels/submodule/subsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
+					Metadata: Metadata{
+						ApplicationName: "subsubmodule3",
+					},
+				},
+				{
+					Language:      Java,
 					Path:          "java-multimodules/application",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					DatabaseDeps: []DatabaseDep{
@@ -273,6 +289,14 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "mvnw.cmd"),
+					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/subsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
+					Metadata: Metadata{
+						ApplicationName: "subsubmodule3",
 					},
 				},
 				{
@@ -352,6 +376,14 @@ func TestDetect(t *testing.T) {
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "mvnw.cmd"),
+					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/subsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
+					Metadata: Metadata{
+						ApplicationName: "subsubmodule3",
 					},
 				},
 				{
