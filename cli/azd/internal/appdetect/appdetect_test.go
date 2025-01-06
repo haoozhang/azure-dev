@@ -79,6 +79,11 @@ func TestDetect(t *testing.T) {
 					Metadata: Metadata{
 						ApplicationName: "subsubmodule3",
 					},
+					Options: map[string]interface{}{
+						JavaProjectOptionCurrentPomDir:         filepath.Join(dir, "java-multi-levels"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,
@@ -214,6 +219,11 @@ func TestDetect(t *testing.T) {
 					Metadata: Metadata{
 						ApplicationName: "subsubmodule3",
 					},
+					Options: map[string]interface{}{
+						JavaProjectOptionCurrentPomDir:         filepath.Join(dir, "java-multi-levels"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw.cmd"),
+					},
 				},
 				{
 					Language:      Java,
@@ -297,6 +307,11 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Metadata: Metadata{
 						ApplicationName: "subsubmodule3",
+					},
+					Options: map[string]interface{}{
+						JavaProjectOptionCurrentPomDir:         filepath.Join(dir, "java-multi-levels"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
@@ -384,6 +399,11 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Metadata: Metadata{
 						ApplicationName: "subsubmodule3",
+					},
+					Options: map[string]interface{}{
+						JavaProjectOptionCurrentPomDir:         filepath.Join(dir, "java-multi-levels"),
+						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw"),
+						JavaProjectOptionWinMavenWrapperPath:   filepath.Join(dir, "java-multi-levels", "submodule", "subsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
