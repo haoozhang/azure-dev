@@ -69,11 +69,15 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			var parentPom *pom
 			var currentWrapper mavenWrapper
 			for i, parentPomItem := range jd.parentPoms {
-				// we can say that the project is in the root project if the path is under the project
+				// we can say that the project is in the root project if
+				// 1) the path is under the project
+				// 2) the artifact is under the parent modules
 				if inRoot := strings.HasPrefix(pomPath, filepath.Dir(parentPomItem.pomFilePath)); inRoot {
-					parentPom = &parentPomItem
-					currentWrapper = jd.mavenWrapperPaths[i]
-					break
+					if inParentModules(mavenProject.pom, parentPomItem.ArtifactId, jd.parentPoms) {
+						parentPom = &parentPomItem
+						currentWrapper = jd.mavenWrapperPaths[i]
+						break
+					}
 				}
 			}
 
@@ -119,6 +123,25 @@ func isSpringBootRunnableProject(pom pom) bool {
 	for _, plugin := range pom.Build.Plugins {
 		if plugin.GroupId == targetGroupId && plugin.ArtifactId == targetArtifactId {
 			return true
+		}
+	}
+	return false
+}
+
+// inParentModules recursively determines if the pom is the submodule of the given parentPom
+func inParentModules(currentPom pom, parentPomArtifactId string, jdParentPoms []pom) bool {
+	springBootStarterParentArtifactId := "spring-boot-starter-parent"
+	if currentPom.Parent.ArtifactId == springBootStarterParentArtifactId {
+		return false
+	}
+
+	if currentPom.Parent.ArtifactId == parentPomArtifactId {
+		return true
+	}
+
+	for _, pom := range jdParentPoms {
+		if pom.ArtifactId == currentPom.Parent.ArtifactId {
+			return inParentModules(pom, parentPomArtifactId, jdParentPoms)
 		}
 	}
 	return false
