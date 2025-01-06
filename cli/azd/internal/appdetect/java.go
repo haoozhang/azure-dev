@@ -62,6 +62,10 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 				return nil, nil
 			}
 
+			if !isSpringBootRunnableProject(mavenProject.pom) {
+				return nil, nil
+			}
+
 			var parentPom *pom
 			var currentWrapper mavenWrapper
 			for i, parentPomItem := range jd.parentPoms {
@@ -106,4 +110,16 @@ func detectMavenWrapper(path string, executable string) string {
 		return wrapperPath
 	}
 	return ""
+}
+
+// isSpringBootRunnableProject checks if the pom indicates a runnable Spring Boot project
+func isSpringBootRunnableProject(pom pom) bool {
+	targetGroupId := "org.springframework.boot"
+	targetArtifactId := "spring-boot-maven-plugin"
+	for _, plugin := range pom.Build.Plugins {
+		if plugin.GroupId == targetGroupId && plugin.ArtifactId == targetArtifactId {
+			return true
+		}
+	}
+	return false
 }
