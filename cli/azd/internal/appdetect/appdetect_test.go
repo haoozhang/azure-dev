@@ -50,9 +50,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule1",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule1",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -63,9 +60,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule2",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule2",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -76,9 +70,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule3",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
 							"subsubmodule3"),
@@ -183,9 +174,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule1",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule1",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -196,9 +184,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule2",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule2",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -209,9 +194,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule3",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
 							"subsubmodule3"),
@@ -265,9 +247,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule1",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule1",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -278,9 +257,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule2",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule2",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -291,9 +267,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule3",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
 							"subsubmodule3"),
@@ -350,9 +323,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule1",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule1",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -363,9 +333,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule2",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule2",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir:          filepath.Join(dir, "java-multi-levels"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "mvnw"),
@@ -376,9 +343,6 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java-multi-levels/submodule/subsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Metadata: Metadata{
-						ApplicationName: "subsubmodule3",
-					},
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
 							"subsubmodule3"),
