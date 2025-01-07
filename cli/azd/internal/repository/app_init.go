@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/azure/azure-dev/cli/azd/pkg/ext"
+	"github.com/azure/azure-dev/cli/azd/pkg/tools/maven"
 
 	"github.com/azure/azure-dev/cli/azd/internal"
 	"github.com/azure/azure-dev/cli/azd/internal/appdetect"
@@ -920,14 +921,26 @@ func (i *Initializer) addMavenBuildHook(
 		if prj.Language == appdetect.Java {
 			if prj.Options[appdetect.JavaProjectOptionParentPomDir] != nil {
 				parentPath := prj.Options[appdetect.JavaProjectOptionParentPomDir].(string)
-				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
-				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
+				posixMavenWrapperPath, err := maven.GetMavenWrapperPath(parentPath, parentPath, "mvnw")
+				if err != nil {
+					return err
+				}
+				winMavenWrapperPath, err := maven.GetMavenWrapperPath(parentPath, parentPath, "mvnw.cmd")
+				if err != nil {
+					return err
+				}
 				wrapperPathMap[parentPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
 			} else {
-				prjPath := prj.Options[appdetect.JavaProjectOptionCurrentPomDir].(string)
-				posixMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionPosixMavenWrapperPath].(string)
-				winMavenWrapperPath := prj.Options[appdetect.JavaProjectOptionWinMavenWrapperPath].(string)
-				wrapperPathMap[prjPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
+				projectPath := prj.Options[appdetect.JavaProjectOptionCurrentPomDir].(string)
+				posixMavenWrapperPath, err := maven.GetMavenWrapperPath(projectPath, projectPath, "mvnw")
+				if err != nil {
+					return err
+				}
+				winMavenWrapperPath, err := maven.GetMavenWrapperPath(projectPath, projectPath, "mvnw.cmd")
+				if err != nil {
+					return err
+				}
+				wrapperPathMap[projectPath] = []string{posixMavenWrapperPath, winMavenWrapperPath}
 			}
 		}
 	}

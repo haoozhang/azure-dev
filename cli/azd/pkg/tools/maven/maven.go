@@ -62,7 +62,7 @@ func (m *Cli) SetPath(projectPath string, rootProjectPath string) {
 
 func (m *Cli) mvnCmd() (string, error) {
 	m.mvnCmdOnce.Do(func() {
-		mvnCmd, err := getMavenPath(m.projectPath, m.rootProjectPath)
+		mvnCmd, err := getMavenPath(m.projectPath, m.rootProjectPath, "mvnw")
 		if err != nil {
 			m.mvnCmdErr = err
 		} else {
@@ -79,8 +79,8 @@ func (m *Cli) mvnCmd() (string, error) {
 
 const downloadedMavenVersion = "3.9.9"
 
-func getMavenPath(projectPath string, rootProjectPath string) (string, error) {
-	mvnw, err := getMavenWrapperPath(projectPath, rootProjectPath)
+func getMavenPath(projectPath string, rootProjectPath string, mavenWrapper string) (string, error) {
+	mvnw, err := GetMavenWrapperPath(projectPath, rootProjectPath, mavenWrapper)
 	if mvnw != "" {
 		return mvnw, nil
 	}
@@ -106,7 +106,7 @@ func getMavenPath(projectPath string, rootProjectPath string) (string, error) {
 // An error is returned if an unexpected error occurred while finding.
 // If mvnw is not found, an empty string is returned with
 // no error.
-func getMavenWrapperPath(projectPath string, rootProjectPath string) (string, error) {
+func GetMavenWrapperPath(projectPath string, rootProjectPath string, mavenWrapper string) (string, error) {
 	searchDir, err := filepath.Abs(projectPath)
 	if err != nil {
 		return "", err
@@ -122,10 +122,10 @@ func getMavenWrapperPath(projectPath string, rootProjectPath string) (string, er
 	for {
 		log.Printf("searchDir: %s\n", searchDir)
 
-		mvnw, err := osexec.LookPath(filepath.Join(searchDir, "mvnw"))
-		if err == nil {
-			log.Printf("found mvnw as: %s\n", mvnw)
-			return mvnw, nil
+		mavenWrapperPath := filepath.Join(searchDir, mavenWrapper)
+		if fileExists(mavenWrapperPath) {
+			log.Printf("found mvnw as: %s\n", mavenWrapperPath)
+			return mavenWrapperPath, nil
 		}
 
 		if !errors.Is(err, os.ErrNotExist) && !errors.Is(err, osexec.ErrNotFound) {

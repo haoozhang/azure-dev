@@ -102,7 +102,7 @@ func Test_getMavenPath(t *testing.T) {
 			require.NoError(t, err)
 			log.Printf("rootPath: %s, cwd: %s, getMavenPath(%s, %s)\n", rootPath, wd, args.projectPath,
 				args.rootProjectPath)
-			actual, err := getMavenPath(args.projectPath, args.rootProjectPath)
+			actual, err := getMavenPath(args.projectPath, args.rootProjectPath, "mvnw")
 
 			if tt.wantErr {
 				assert.Error(t, err)
