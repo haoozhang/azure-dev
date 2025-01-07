@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>subsubmodule1</artifactId>
+    <artifactId>subsubmodule001</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>subsubmodule1</name>
     <description>subsubmodule1</description>

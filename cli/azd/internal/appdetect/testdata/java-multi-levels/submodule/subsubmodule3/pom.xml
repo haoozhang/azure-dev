@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>subsubmodule3</artifactId>
+    <artifactId>subsubmodule003</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>subsubmodule3</name>
     <description>subsubmodule3</description>
