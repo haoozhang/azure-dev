@@ -115,18 +115,6 @@ func detectMavenWrapper(path string, executable string) string {
 	return ""
 }
 
-// isSpringBootRunnableProject checks if the pom indicates a runnable Spring Boot project
-func isSpringBootRunnableProject(project mavenProject) bool {
-	targetGroupId := "org.springframework.boot"
-	targetArtifactId := "spring-boot-maven-plugin"
-	for _, plugin := range project.pom.Build.Plugins {
-		if plugin.GroupId == targetGroupId && plugin.ArtifactId == targetArtifactId {
-			return true
-		}
-	}
-	return false
-}
-
 // inParentModules recursively descends the modules of parentPom to determines if the currentPom is submodule
 func inParentModules(currentPom pom, parentPom pom, parentPoms []pom) bool {
 	if inModule(currentPom, parentPom) {
