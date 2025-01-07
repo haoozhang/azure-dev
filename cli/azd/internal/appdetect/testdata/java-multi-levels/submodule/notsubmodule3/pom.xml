@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>subsubmodule003</artifactId>
+    <artifactId>notsubmodule003</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>subsubmodule3</name>
-    <description>subsubmodule3</description>
+    <name>notsubmodule3</name>
+    <description>notsubmodule3</description>
 
     <properties>
         <java.version>17</java.version>

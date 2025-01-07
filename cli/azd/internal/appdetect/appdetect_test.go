@@ -68,15 +68,15 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
-					Path:          "java-multi-levels/submodule/subsubmodule3",
+					Path:          "java-multi-levels/submodule/notsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3"),
+							"notsubmodule3"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw"),
+							"notsubmodule3", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw.cmd"),
+							"notsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
@@ -192,15 +192,15 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
-					Path:          "java-multi-levels/submodule/subsubmodule3",
+					Path:          "java-multi-levels/submodule/notsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3"),
+							"notsubmodule3"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw"),
+							"notsubmodule3", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw.cmd"),
+							"notsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
@@ -265,15 +265,15 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
-					Path:          "java-multi-levels/submodule/subsubmodule3",
+					Path:          "java-multi-levels/submodule/notsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3"),
+							"notsubmodule3"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw"),
+							"notsubmodule3", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw.cmd"),
+							"notsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
@@ -341,15 +341,15 @@ func TestDetect(t *testing.T) {
 				},
 				{
 					Language:      Java,
-					Path:          "java-multi-levels/submodule/subsubmodule3",
+					Path:          "java-multi-levels/submodule/notsubmodule3",
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3"),
+							"notsubmodule3"),
 						JavaProjectOptionPosixMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw"),
+							"notsubmodule3", "mvnw"),
 						JavaProjectOptionWinMavenWrapperPath: filepath.Join(dir, "java-multi-levels", "submodule",
-							"subsubmodule3", "mvnw.cmd"),
+							"notsubmodule3", "mvnw.cmd"),
 					},
 				},
 				{
