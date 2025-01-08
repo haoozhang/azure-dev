@@ -14,7 +14,8 @@ import (
 
 type javaDetector struct {
 	mvnCli     *maven.Cli
-	parentPoms []pom
+	rootPoms   []pom
+	modulePoms map[string]pom
 }
 
 // JavaProjectOptionParentPomDir The parent module path of the maven multi-module project
@@ -37,9 +38,26 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			}
 
 			if len(mavenProject.pom.Modules) > 0 {
-				// This is a multi-module project, we will capture the analysis, but return nil
-				// to continue recursing
-				jd.parentPoms = append(jd.parentPoms, mavenProject.pom)
+				// This is a multi-module project, we will capture the analysis, but return nil to continue recursing
+				if _, ok := jd.modulePoms[mavenProject.pom.pomFilePath]; !ok {
+					jd.rootPoms = append(jd.rootPoms, mavenProject.pom)
+				}
+				for _, module := range mavenProject.pom.Modules {
+					var modulePath string
+					if strings.HasSuffix(module, ".xml") {
+						modulePath = filepath.Join(path, module)
+					} else {
+						modulePath = filepath.Join(path, module, "pom.xml")
+					}
+					jd.modulePoms[modulePath] = mavenProject.pom
+					for {
+						if result, ok := jd.modulePoms[jd.modulePoms[modulePath].pomFilePath]; ok {
+							jd.modulePoms[modulePath] = result
+						} else {
+							break
+						}
+					}
+				}
 				return nil, nil
 			}
 
@@ -48,12 +66,13 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			}
 
 			var parentPom *pom
-			for _, parentPomItem := range jd.parentPoms {
+			for _, parentPomItem := range jd.rootPoms {
 				// we can say that the project is in the root project if
 				// 1) the project path is under the root project
 				// 2) the project is under the modules of root project
-				inRoot := strings.HasPrefix(pomPath, filepath.Dir(parentPomItem.pomFilePath)+string(filepath.Separator))
-				if inRoot && inParentModules(mavenProject.pom, parentPomItem, jd.parentPoms) {
+				underRootPath := strings.HasPrefix(pomPath, filepath.Dir(parentPomItem.pomFilePath)+string(filepath.Separator))
+				rootPomItem, exist := jd.modulePoms[mavenProject.pom.pomFilePath]
+				if underRootPath && exist && rootPomItem.pomFilePath == parentPomItem.pomFilePath {
 					parentPom = &parentPomItem
 					break
 				}
@@ -96,7 +115,8 @@ func inParentModules(currentPom pom, parentPom pom, parentPoms []pom) bool {
 
 func inModule(currentPom pom, parentPom pom) bool {
 	for _, module := range parentPom.Modules {
-		if module == filepath.Base(filepath.Dir(currentPom.pomFilePath)) {
+		if module == filepath.Base(filepath.Dir(currentPom.pomFilePath)) ||
+			module == filepath.Base(currentPom.pomFilePath) {
 			return true
 		}
 	}
