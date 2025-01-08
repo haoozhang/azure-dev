@@ -17,9 +17,6 @@ type javaDetector struct {
 	parentPoms []pom
 }
 
-// JavaProjectOptionCurrentPomDir The project path of the maven single-module project
-const JavaProjectOptionCurrentPomDir = "path"
-
 // JavaProjectOptionParentPomDir The parent module path of the maven multi-module project
 const JavaProjectOptionParentPomDir = "parentPath"
 
@@ -71,10 +68,6 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			if parentPom != nil {
 				project.Options = map[string]interface{}{
 					JavaProjectOptionParentPomDir: filepath.Dir(parentPom.pomFilePath),
-				}
-			} else {
-				project.Options = map[string]interface{}{
-					JavaProjectOptionCurrentPomDir: path,
 				}
 			}
 

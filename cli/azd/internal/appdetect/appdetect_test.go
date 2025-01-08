@@ -40,9 +40,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java"),
-					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/notsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
 				},
 				{
 					Language:      Java,
@@ -58,15 +60,6 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir: filepath.Join(dir, "java-multi-levels"),
-					},
-				},
-				{
-					Language:      Java,
-					Path:          "java-multi-levels/submodule/notsubmodule3",
-					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"notsubmodule3"),
 					},
 				},
 				{
@@ -152,9 +145,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java"),
-					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/notsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
 				},
 				{
 					Language:      Java,
@@ -170,15 +165,6 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir: filepath.Join(dir, "java-multi-levels"),
-					},
-				},
-				{
-					Language:      Java,
-					Path:          "java-multi-levels/submodule/notsubmodule3",
-					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"notsubmodule3"),
 					},
 				},
 				{
@@ -213,9 +199,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java"),
-					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/notsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
 				},
 				{
 					Language:      Java,
@@ -231,15 +219,6 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir: filepath.Join(dir, "java-multi-levels"),
-					},
-				},
-				{
-					Language:      Java,
-					Path:          "java-multi-levels/submodule/notsubmodule3",
-					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"notsubmodule3"),
 					},
 				},
 				{
@@ -277,9 +256,11 @@ func TestDetect(t *testing.T) {
 					Language:      Java,
 					Path:          "java",
 					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java"),
-					},
+				},
+				{
+					Language:      Java,
+					Path:          "java-multi-levels/submodule/notsubmodule3",
+					DetectionRule: "Inferred by presence of: pom.xml",
 				},
 				{
 					Language:      Java,
@@ -295,15 +276,6 @@ func TestDetect(t *testing.T) {
 					DetectionRule: "Inferred by presence of: pom.xml",
 					Options: map[string]interface{}{
 						JavaProjectOptionParentPomDir: filepath.Join(dir, "java-multi-levels"),
-					},
-				},
-				{
-					Language:      Java,
-					Path:          "java-multi-levels/submodule/notsubmodule3",
-					DetectionRule: "Inferred by presence of: pom.xml",
-					Options: map[string]interface{}{
-						JavaProjectOptionCurrentPomDir: filepath.Join(dir, "java-multi-levels", "submodule",
-							"notsubmodule3"),
 					},
 				},
 				{
