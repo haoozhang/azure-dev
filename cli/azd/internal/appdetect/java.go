@@ -13,14 +13,8 @@ import (
 )
 
 type javaDetector struct {
-	mvnCli            *maven.Cli
-	parentPoms        []pom
-	mavenWrapperPaths []mavenWrapper
-}
-
-type mavenWrapper struct {
-	posixPath string
-	winPath   string
+	mvnCli     *maven.Cli
+	parentPoms []pom
 }
 
 // JavaProjectOptionCurrentPomDir The project path of the maven single-module project
@@ -28,12 +22,6 @@ const JavaProjectOptionCurrentPomDir = "path"
 
 // JavaProjectOptionParentPomDir The parent module path of the maven multi-module project
 const JavaProjectOptionParentPomDir = "parentPath"
-
-// JavaProjectOptionPosixMavenWrapperPath The path to the maven wrapper script for POSIX systems
-const JavaProjectOptionPosixMavenWrapperPath = "posixMavenWrapperPath"
-
-// JavaProjectOptionWinMavenWrapperPath The path to the maven wrapper script for Windows systems
-const JavaProjectOptionWinMavenWrapperPath = "winMavenWrapperPath"
 
 func (jd *javaDetector) Language() Language {
 	return Java
@@ -55,10 +43,6 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 				// This is a multi-module project, we will capture the analysis, but return nil
 				// to continue recursing
 				jd.parentPoms = append(jd.parentPoms, mavenProject.pom)
-				jd.mavenWrapperPaths = append(jd.mavenWrapperPaths, mavenWrapper{
-					posixPath: detectMavenWrapper(path, "mvnw"),
-					winPath:   detectMavenWrapper(path, "mvnw.cmd"),
-				})
 				return nil, nil
 			}
 
@@ -67,15 +51,13 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			}
 
 			var parentPom *pom
-			var currentWrapper mavenWrapper
-			for i, parentPomItem := range jd.parentPoms {
+			for _, parentPomItem := range jd.parentPoms {
 				// we can say that the project is in the root project if
 				// 1) the project path is under the root project
 				// 2) the project is under the modules of root project
 				inRoot := strings.HasPrefix(pomPath, filepath.Dir(parentPomItem.pomFilePath)+string(filepath.Separator))
 				if inRoot && inParentModules(mavenProject.pom, parentPomItem, jd.parentPoms) {
 					parentPom = &parentPomItem
-					currentWrapper = jd.mavenWrapperPaths[i]
 					break
 				}
 			}
@@ -88,15 +70,11 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			detectAzureDependenciesByAnalyzingSpringBootProject(mavenProject, &project)
 			if parentPom != nil {
 				project.Options = map[string]interface{}{
-					JavaProjectOptionParentPomDir:          filepath.Dir(parentPom.pomFilePath),
-					JavaProjectOptionPosixMavenWrapperPath: currentWrapper.posixPath,
-					JavaProjectOptionWinMavenWrapperPath:   currentWrapper.winPath,
+					JavaProjectOptionParentPomDir: filepath.Dir(parentPom.pomFilePath),
 				}
 			} else {
 				project.Options = map[string]interface{}{
-					JavaProjectOptionCurrentPomDir:         path,
-					JavaProjectOptionPosixMavenWrapperPath: detectMavenWrapper(path, "mvnw"),
-					JavaProjectOptionWinMavenWrapperPath:   detectMavenWrapper(path, "mvnw.cmd"),
+					JavaProjectOptionCurrentPomDir: path,
 				}
 			}
 
