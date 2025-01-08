@@ -85,14 +85,6 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 	return nil, nil
 }
 
-func detectMavenWrapper(path string, executable string) string {
-	wrapperPath := filepath.Join(path, executable)
-	if fileExists(wrapperPath) {
-		return wrapperPath
-	}
-	return ""
-}
-
 // inParentModules recursively descends the modules of parentPom to determines if the currentPom is submodule
 func inParentModules(currentPom pom, parentPom pom, parentPoms []pom) bool {
 	if inModule(currentPom, parentPom) {
