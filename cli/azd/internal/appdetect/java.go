@@ -39,25 +39,7 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 
 			if len(mavenProject.pom.Modules) > 0 {
 				// This is a multi-module project, we will capture the analysis, but return nil to continue recursing
-				if _, ok := jd.modulePoms[mavenProject.pom.pomFilePath]; !ok {
-					jd.rootPoms = append(jd.rootPoms, mavenProject.pom)
-				}
-				for _, module := range mavenProject.pom.Modules {
-					var modulePath string
-					if strings.HasSuffix(module, ".xml") {
-						modulePath = filepath.Join(path, module)
-					} else {
-						modulePath = filepath.Join(path, module, "pom.xml")
-					}
-					jd.modulePoms[modulePath] = mavenProject.pom
-					for {
-						if result, ok := jd.modulePoms[jd.modulePoms[modulePath].pomFilePath]; ok {
-							jd.modulePoms[modulePath] = result
-						} else {
-							break
-						}
-					}
-				}
+				jd.captureRootAndModules(mavenProject, path)
 				return nil, nil
 			}
 
@@ -69,10 +51,11 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 			for _, parentPomItem := range jd.rootPoms {
 				// we can say that the project is in the root project if
 				// 1) the project path is under the root project
-				// 2) the project is under the modules of root project
-				underRootPath := strings.HasPrefix(pomPath, filepath.Dir(parentPomItem.pomFilePath)+string(filepath.Separator))
+				// 2) the project is the module of root project
+				parentPomFilePath := parentPomItem.pomFilePath
+				underRootPath := strings.HasPrefix(pomPath, filepath.Dir(parentPomFilePath)+string(filepath.Separator))
 				rootPomItem, exist := jd.modulePoms[mavenProject.pom.pomFilePath]
-				if underRootPath && exist && rootPomItem.pomFilePath == parentPomItem.pomFilePath {
+				if underRootPath && exist && rootPomItem.pomFilePath == parentPomFilePath {
 					parentPom = &parentPomItem
 					break
 				}
@@ -97,28 +80,29 @@ func (jd *javaDetector) DetectProject(ctx context.Context, path string, entries 
 	return nil, nil
 }
 
-// inParentModules recursively descends the modules of parentPom to determines if the currentPom is submodule
-func inParentModules(currentPom pom, parentPom pom, parentPoms []pom) bool {
-	if inModule(currentPom, parentPom) {
-		return true
+// captureRootAndModules records the root and modules information for parent detection later
+func (jd *javaDetector) captureRootAndModules(mavenProject mavenProject, path string) {
+	if _, ok := jd.modulePoms[mavenProject.pom.pomFilePath]; !ok {
+		// add into rootPoms if it's new root
+		jd.rootPoms = append(jd.rootPoms, mavenProject.pom)
 	}
-
-	for _, module := range parentPom.Modules {
-		for _, pomItem := range parentPoms {
-			if module == filepath.Base(filepath.Dir(pomItem.pomFilePath)) {
-				return inParentModules(currentPom, pomItem, parentPoms)
+	for _, module := range mavenProject.pom.Modules {
+		// for module: submodule, module path is the ./submodule/pom.xml
+		// for module: backend-pom.xml, module path is the /backend-pom.xml
+		var modulePath string
+		if strings.HasSuffix(module, ".xml") {
+			modulePath = filepath.Join(path, module)
+		} else {
+			modulePath = filepath.Join(path, module, "pom.xml")
+		}
+		// modulePath points to the actual root pom, not current parent pom
+		jd.modulePoms[modulePath] = mavenProject.pom
+		for {
+			if result, ok := jd.modulePoms[jd.modulePoms[modulePath].pomFilePath]; ok {
+				jd.modulePoms[modulePath] = result
+			} else {
+				break
 			}
 		}
 	}
-	return false
-}
-
-func inModule(currentPom pom, parentPom pom) bool {
-	for _, module := range parentPom.Modules {
-		if module == filepath.Base(filepath.Dir(currentPom.pomFilePath)) ||
-			module == filepath.Base(currentPom.pomFilePath) {
-			return true
-		}
-	}
-	return false
 }
